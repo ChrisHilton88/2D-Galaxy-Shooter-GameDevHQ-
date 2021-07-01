@@ -6,6 +6,17 @@ public class Enemy : MonoBehaviour
 {
     public int enemySpeed = 5;
 
+    Player player;
+
+    void Start()
+    {
+        player = GameObject.Find("Player").GetComponent<Player>();
+
+        if (player == null)
+        {
+            Debug.Log("Player script not found in Enemy script");
+        }
+    }
 
     void Update()
     {
@@ -18,19 +29,20 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        // Enter code
+        if (other.tag == "Laser")
+        {
+            Debug.Log("Hit: " + other.transform.name);
+            Destroy(other.gameObject);
+            Destroy(this.gameObject);
+        }
+
+        if(other.tag == "Player")
+        {
+            Debug.Log("Hit: " + other.transform.name);
+            player.Damage();
+            Destroy(this.gameObject);
+        }
     }
 }
-
-//private void OnTriggerEnter2D(Collider2D collision)
-//{
-//    if (collision.tag == "Laser" || collision.tag == "Player")
-//    {
-//        Debug.Log("Hit: " + collision.transform.name);
-//        Destroy(collision.gameObject);
-//        Destroy(this.gameObject);
-//    }
-//}
