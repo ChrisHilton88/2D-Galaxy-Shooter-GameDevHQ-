@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed = 12.5f;
     [SerializeField] private float _speedMultiplier = 1.5f;
+    [SerializeField] private float _maxSpeed = 25;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
 
@@ -21,8 +22,11 @@ public class Player : MonoBehaviour
 
     SpawnManager spawnManager;
 
+    [SerializeField] private GameObject playerShield;
+
     [SerializeField] private bool _isTripleShotEnabled = false;
     [SerializeField] private bool _isSpeedBoostEnabled = false;
+    [SerializeField] private bool _isShieldBoostEnabled = false;
 
 
     void Start()
@@ -74,9 +78,16 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+        if (_isShieldBoostEnabled == true)
+        {
+            _isShieldBoostEnabled = false;
+            playerShield.SetActive(false);
+            return;           
+        }
+
         _playerLives--;
 
-        if(_playerLives < 1)
+        if (_playerLives < 1)
         {
             Destroy(this.gameObject);
             spawnManager.OnPlayerDeath();
@@ -92,8 +103,21 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         _isSpeedBoostEnabled = true;
+
+        // Need to fix up the speed multiplier
+        if(_speed >= _maxSpeed)
+        {
+            _speed = _maxSpeed;
+        }
+
         _speed *= _speedMultiplier;
         StartCoroutine(SpeedBoostPowerupRoutine());
+    }
+
+    public void ShieldBoostActive()
+    {
+        _isShieldBoostEnabled = true;
+        playerShield.SetActive(true);
     }
 
     IEnumerator TripleShotPowerupRoutine()
@@ -101,6 +125,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         _isTripleShotEnabled = false;
     }
+
     IEnumerator SpeedBoostPowerupRoutine()
     {
         yield return new WaitForSeconds(5.0f);

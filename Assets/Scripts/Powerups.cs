@@ -35,23 +35,23 @@ public class Powerups : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(powerupID == 0)
+            switch (powerupID)
             {
-                Debug.Log("Collected Triple Shot Powerup");
-                player.TripleShotActive();
-                Destroy(this.gameObject);
-            }
-            else if(powerupID == 1)
-            {
-                Debug.Log("Collected Speed Boost Powerup");
-                player.SpeedBoostActive();
-                Destroy(this.gameObject);
-            }
-            else if(powerupID == 2)
-            {
-                Debug.Log("Collected Shields Powerup");
-                // Shields
-                Destroy(this.gameObject);
+                case 0:
+                    player.TripleShotActive();
+                    Destroy(this.gameObject);
+                    break;
+                case 1:
+                    player.SpeedBoostActive();
+                    Destroy(this.gameObject);
+                    break;
+                case 2:
+                    player.ShieldBoostActive();
+                    Destroy(this.gameObject);
+                    break;
+                default:
+                    Debug.Log("Unknown value");
+                    break;
             }
         }
     }
