@@ -33,14 +33,14 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Laser")
         {
-            Debug.Log("Hit: " + other.transform.name);
             Destroy(other.gameObject);
+            player.AddPoints(Random.Range(10, 21));
+            // As the max range is not inclusive in Random.Range while using Int, increase by 1 
             Destroy(this.gameObject);
         }
 
         if(other.tag == "Player")
         {
-            Debug.Log("Hit: " + other.transform.name);
             player.Damage();
             Destroy(this.gameObject);
         }

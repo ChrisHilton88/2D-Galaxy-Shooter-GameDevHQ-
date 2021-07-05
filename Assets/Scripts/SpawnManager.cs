@@ -43,7 +43,6 @@ public class SpawnManager : MonoBehaviour
 
     public void OnPlayerDeath()
     {
-        Debug.Log("OnPlayerDeath() true");
         stopSpawning = true;
     }
 }

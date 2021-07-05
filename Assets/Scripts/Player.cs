@@ -18,9 +18,12 @@ public class Player : MonoBehaviour
     private float _canFire = 0;
     private float _fireRate = 0.25f;
 
-   [SerializeField] private int _playerLives = 3;
+    [SerializeField] private int _playerLives = 3;
+    [SerializeField] private int _score;
 
     SpawnManager spawnManager;
+
+    UIManager uiManager;
 
     [SerializeField] private GameObject playerShield;
 
@@ -31,12 +34,20 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();  
+        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if (spawnManager == null)
         {
             Debug.LogError("SpawnManager not found in Player");
         }
+
+        if (uiManager == null)
+        {
+            Debug.LogError("UIManager not found in Canvas game object");
+        }
+
+        playerShield.SetActive(false);
     }
 
     void Update()
@@ -65,7 +76,7 @@ public class Player : MonoBehaviour
     {
         _canFire = Time.time + _fireRate;
 
-        if(_isTripleShotEnabled == true)
+        if (_isTripleShotEnabled == true)
         {
             Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
         }
@@ -82,7 +93,7 @@ public class Player : MonoBehaviour
         {
             _isShieldBoostEnabled = false;
             playerShield.SetActive(false);
-            return;           
+            return;
         }
 
         _playerLives--;
@@ -105,7 +116,7 @@ public class Player : MonoBehaviour
         _isSpeedBoostEnabled = true;
 
         // Need to fix up the speed multiplier
-        if(_speed >= _maxSpeed)
+        if (_speed >= _maxSpeed)
         {
             _speed = _maxSpeed;
         }
@@ -132,4 +143,11 @@ public class Player : MonoBehaviour
         _speed /= _speedMultiplier;
         _isSpeedBoostEnabled = false;
     }
+
+    public void AddPoints(int points)
+    {
+        _score += points;
+        uiManager.UpdateScore(_score);
+    }
+
 }

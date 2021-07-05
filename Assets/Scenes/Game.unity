@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 86772372}
   - component: {fileID: 86772371}
   - component: {fileID: 86772370}
+  - component: {fileID: 86772374}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -271,6 +272,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &86772374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86772369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3417c52a48842c41a09d57c0f0bd3d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scoreText: {fileID: 409806048}
 --- !u!1 &409806046
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,41 +722,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 792019825471899926, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2087290257070891283, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: playerShield
-      value: 
-      objectReference: {fileID: 7304489359527007113}
-    - target: {fileID: 4251627671102909090, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4251627671102909090, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4251627671102909090, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4251627671102909090, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6438009634670185699, guid: ba955e5b8804d594c82ab3da78d90bfe,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7304489359145454105, guid: ba955e5b8804d594c82ab3da78d90bfe,
         type: 3}
       propertyPath: m_Name
@@ -805,28 +784,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba955e5b8804d594c82ab3da78d90bfe, type: 3}
---- !u!1 &7304489359527007113 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 792019825471899926, guid: ba955e5b8804d594c82ab3da78d90bfe,
-    type: 3}
-  m_PrefabInstance: {fileID: 7304489359527007112}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &7304489359527007114
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7304489359527007113}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 674176ffac228664eb49aba4d57e30f2, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
