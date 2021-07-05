@@ -98,6 +98,8 @@ public class Player : MonoBehaviour
 
         _playerLives--;
 
+        uiManager.UpdateLivesDisplay(_playerLives);
+
         if (_playerLives < 1)
         {
             Destroy(this.gameObject);
