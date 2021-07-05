@@ -225,6 +225,7 @@ MonoBehaviour:
   _playerLives: 3
   _score: 0
   playerShield: {fileID: 792019825471899926}
+  gameOver: {fileID: 0}
   _isTripleShotEnabled: 0
   _isSpeedBoostEnabled: 0
   _isShieldBoostEnabled: 0
