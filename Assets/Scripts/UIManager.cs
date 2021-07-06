@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,12 +10,20 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Sprite[] _spriteLives;
 
-    [SerializeField] private GameObject gameOver;
+    [SerializeField] private Text gameOver;
+    [SerializeField] private Text restartGame;
 
+    private GameManager gameManager;
 
     void Start()
     {
         _scoreText.text = "Score: " + 0;
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+
+        if(gameManager == null)
+        {
+            Debug.LogError("GameManager is NULL within UIManager");
+        }
     }
 
     public void UpdateScore(int playerScore)
@@ -30,7 +37,7 @@ public class UIManager : MonoBehaviour
 
         if(currentLives < 1)
         {
-            StartCoroutine(GameOverFlicker());
+            GameOverSequence();
         }
     }
 
@@ -38,10 +45,17 @@ public class UIManager : MonoBehaviour
     {
         while (true)
         {
-            gameOver.SetActive(true);
+            gameOver.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.5f);
-            gameOver.SetActive(false);
+            gameOver.gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    void GameOverSequence()
+    {
+        gameManager.GameOver();
+        StartCoroutine(GameOverFlicker());
+        restartGame.gameObject.SetActive(true);
     }
 }
