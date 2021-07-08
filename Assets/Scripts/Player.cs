@@ -12,8 +12,11 @@ public class Player : MonoBehaviour
 
     private Vector3 _laserOffset = new Vector3(0, 1, 0);
 
-    public GameObject laserPrefab;
-    public GameObject tripleShotPrefab;
+    [SerializeField] private GameObject laserPrefab;
+    [SerializeField] private GameObject tripleShotPrefab;
+    [SerializeField] private GameObject rightEngineThruster;
+    [SerializeField] private GameObject leftEngineThruster;
+
 
     private float _canFire = 0;
     private float _fireRate = 0.25f;
@@ -98,13 +101,21 @@ public class Player : MonoBehaviour
 
         _playerLives--;
 
-        uiManager.UpdateLivesDisplay(_playerLives);
-
-        if (_playerLives < 1)
+        if(_playerLives == 2)
+        {
+            rightEngineThruster.SetActive(true);
+        }
+        else if(_playerLives == 1)
+        {
+            leftEngineThruster.SetActive(true);
+        }
+        else if (_playerLives < 1)
         {
             Destroy(this.gameObject);
             spawnManager.OnPlayerDeath();
         }
+
+        uiManager.UpdateLivesDisplay(_playerLives);
     }
 
     public void TripleShotActive()

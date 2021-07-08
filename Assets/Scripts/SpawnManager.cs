@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -11,7 +10,8 @@ public class SpawnManager : MonoBehaviour
 
     private bool stopSpawning = false;
 
-    void Start()
+
+    public void StartSpawning()
     {
         StartCoroutine(SpawnEnemiesRoutine());
         StartCoroutine(SpawnPowerupRoutine());
@@ -20,6 +20,8 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnEnemiesRoutine()
     {
+        yield return new WaitForSeconds(2.633f);
+
         while (stopSpawning == false)
         {
             Vector3 enemySpawnPos = new Vector3(Random.Range(-8f, 8f), 6f, 0);
@@ -31,7 +33,9 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPowerupRoutine()
     {
-        while(stopSpawning == false)
+        yield return new WaitForSeconds(2.633f);
+
+        while (stopSpawning == false)
         {
             yield return null;
             Vector3 powerupSpawnPos = new Vector3(Random.Range(-8f, 8f), 6f, 0);

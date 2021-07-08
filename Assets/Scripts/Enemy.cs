@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int enemySpeed = 5;
+    [SerializeField] private float _enemySpeed = 5;
+    [SerializeField] private float _slowRate = 2;
 
     Player player;
+
+    Animator animator;
 
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
+
+        animator = GetComponent<Animator>();
 
         if (player == null)
         {
@@ -20,7 +25,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.down * enemySpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * _enemySpeed * Time.deltaTime);
 
         if(transform.position.y < -5)
         {
@@ -33,14 +38,17 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Laser")
         {
+            _enemySpeed = 0.25f;
+            animator.SetTrigger("OnEnemyDeath");
             Destroy(other.gameObject);
             player.AddPoints(Random.Range(10, 21));
-            // As the max range is not inclusive in Random.Range while using Int, increase by 1 
-            Destroy(this.gameObject);
+            Destroy(this.gameObject, 2.633f);
         }
 
         if(other.tag == "Player")
         {
+            _enemySpeed = 0;
+            animator.SetTrigger("OnEnemyDeath");
             player.Damage();
             Destroy(this.gameObject);
         }
