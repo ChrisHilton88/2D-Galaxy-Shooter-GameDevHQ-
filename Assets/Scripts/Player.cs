@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     private float _canFire = 0;
     private float _fireRate = 0.25f;
 
+    private Vector3 laserOffset = new Vector3(0, 0.5f, 0);
+
     [SerializeField] private int _playerLives = 3;
     [SerializeField] private int _score;
 
@@ -91,7 +93,7 @@ public class Player : MonoBehaviour
 
         else
         {
-            Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            Instantiate(laserPrefab, transform.position + laserOffset, Quaternion.identity);
         }
 
         audioSource.Play();

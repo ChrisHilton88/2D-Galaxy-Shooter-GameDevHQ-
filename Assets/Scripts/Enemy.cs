@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _enemySpeed = 5;
-    [SerializeField] private float _slowRate = 2;
+    [SerializeField] private float _enemySpeed = 3;
 
     Player player;
 
     Animator animator;
 
     AudioSource audioSource;
+
+    [SerializeField] private GameObject _enemyLaser;
+
+    [SerializeField] private float fireRate;
+    [SerializeField] private float canFire = -1f;
+
+    //[SerializeField] private bool isAlive;
 
     void Start()
     {
@@ -23,13 +29,44 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("Player script not found in Enemy script");
         }
+
+        if(audioSource == null)
+        {
+            Debug.LogError("AudioSource not found on Enemy script");
+        }
+
+        if(animator == null)
+        {
+            Debug.LogError("Animator not found on Enemy script");
+        }
+
+        //isAlive = true;
+       // StartCoroutine(EnemyLaserRoutine());
     }
 
     void Update()
     {
+        CalculateMovement();
+
+        if (Time.time > canFire)
+        {
+            fireRate = Random.Range(1f, 4f);
+            canFire = Time.time + fireRate;
+            GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
+            Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+
+            for (int i = 0; i < lasers.Length; i++)
+            {
+                lasers[i].AssignEnemyLaser();
+            }
+        }
+    }
+
+    void CalculateMovement()
+    {
         transform.Translate(Vector3.down * _enemySpeed * Time.deltaTime);
 
-        if(transform.position.y < -5)
+        if (transform.position.y < -5)
         {
             float randomX = Random.Range(-8f, 8f);
             transform.position = new Vector3(randomX, 6, 0);
@@ -40,6 +77,8 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Laser")
         {
+            Destroy(GetComponent<Collider2D>());
+            //isAlive = false;
             audioSource.Play();
             _enemySpeed = 0.25f;
             animator.SetTrigger("OnEnemyDeath");
@@ -50,10 +89,28 @@ public class Enemy : MonoBehaviour
 
         if(other.tag == "Player")
         {
+            Destroy(GetComponent<Collider2D>());
+            //isAlive = false;
             audioSource.Play();
             _enemySpeed = 0.25f;
             animator.SetTrigger("OnEnemyDeath");
             player.Damage();
         }
     }
+
+    //IEnumerator EnemyLaserRoutine()
+    //{
+    //    while (isAlive == true)
+    //    {
+    //        float randomLaser = Random.Range(1f, 3f);
+    //        yield return new WaitForSeconds(randomLaser);
+    //        GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
+    //        Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+
+    //        for (int i = 0; i < lasers.Length; i++)
+    //        {
+    //            lasers[i].AssignEnemyLaser();
+    //        }
+    //    }
+    //}
 }
