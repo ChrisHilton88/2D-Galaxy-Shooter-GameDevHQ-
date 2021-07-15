@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed = 12.5f;
     [SerializeField] private float _speedMultiplier = 1.5f;
+    [SerializeField] private float _thrusterSpeed = 18.75f;
     [SerializeField] private float _maxSpeed = 25;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
@@ -67,6 +68,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _speed = 
         }
     }
 
