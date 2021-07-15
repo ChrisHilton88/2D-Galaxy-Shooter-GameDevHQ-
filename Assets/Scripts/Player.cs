@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            _speed = 
+            _speed = _thrusterSpeed; 
         }
     }
 
