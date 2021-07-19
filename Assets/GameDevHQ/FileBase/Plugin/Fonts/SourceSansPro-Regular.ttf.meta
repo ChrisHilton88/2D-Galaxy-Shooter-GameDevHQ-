@@ -1,22 +1,3 @@
-fileFormatVersion: 2
-guid: 4fd3631bcba788940ad9183ad76683fd
-TrueTypeFontImporter:
-  externalObjects: {}
-  serializedVersion: 4
-  fontSize: 16
-  forceTextureCase: -2
-  characterSpacing: 0
-  characterPadding: 1
-  includeFontData: 1
-  fontName: Source Sans Pro
-  fontNames:
-  - Source Sans Pro
-  fallbackFontReferences: []
-  customCharacters: 
-  fontRenderingMode: 0
-  ascentCalculationMode: 1
-  useLegacyBoundsCalculation: 0
-  shouldRoundAdvanceValue: 1
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+version https://git-lfs.github.com/spec/v1
+oid sha256:46ff7341d8c6716ea26b1701dc0882e43c002e89b675f0e7076784c776bf9c6d
+size 530

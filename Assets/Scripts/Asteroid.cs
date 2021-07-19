@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
-    [SerializeField] private int rotateSpeed = 10;
-
-    Animator anim;
+    [SerializeField] private int rotateSpeed = 20;
 
     SpawnManager spawnManager;
 
+    [SerializeField] private GameObject _explosionPrefab;
+
     void Start()
     {
-        anim = GetComponent<Animator>();
         spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+
+        if(spawnManager == null)
+        {
+            Debug.LogError("SpawnManager is Null : Asteroid");
+        }
     }
 
     void Update()
@@ -25,10 +29,10 @@ public class Asteroid : MonoBehaviour
     {
         if (other.tag == "Laser")
         {
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(other.gameObject);
-            anim.SetTrigger("OnAsteroidExplosion");
             spawnManager.StartSpawning();
-            Destroy(this.gameObject, 2.633f);
+            Destroy(this.gameObject);
         }
     }
 }

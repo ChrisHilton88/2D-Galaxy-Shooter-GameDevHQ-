@@ -6,20 +6,23 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed = 12.5f;
     [SerializeField] private float _speedMultiplier = 1.5f;
+    [SerializeField] private float _thrusterSpeed;
+    [SerializeField] private float _thrusterSpeedMultiplier = 1.5f;
     [SerializeField] private float _maxSpeed = 25;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
-
-    private Vector3 _laserOffset = new Vector3(0, 1, 0);
 
     [SerializeField] private GameObject laserPrefab;
     [SerializeField] private GameObject tripleShotPrefab;
     [SerializeField] private GameObject rightEngineThruster;
     [SerializeField] private GameObject leftEngineThruster;
 
+    AudioSource audioSource;
 
     private float _canFire = 0;
     private float _fireRate = 0.25f;
+
+    private Vector3 laserOffset = new Vector3(0, 0.5f, 0);
 
     [SerializeField] private int _playerLives = 3;
     [SerializeField] private int _score;
@@ -39,6 +42,7 @@ public class Player : MonoBehaviour
     {
         spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        audioSource = GameObject.Find("Laser_Shot_Audio_Clip").GetComponent<AudioSource>();
 
         if (spawnManager == null)
         {
@@ -50,16 +54,30 @@ public class Player : MonoBehaviour
             Debug.LogError("UIManager not found in Canvas game object");
         }
 
+        if(audioSource == null)
+        {
+            Debug.LogError("Audio clip is null");
+        }
+
         playerShield.SetActive(false);
     }
 
     void Update()
     {
         PlayerMovement();
+        ThrusterBoost();
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
+        }
+    }
+
+    void ThrusterBoost()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _speed *= _thrusterSpeedMultiplier; 
         }
     }
 
@@ -86,8 +104,10 @@ public class Player : MonoBehaviour
 
         else
         {
-            Instantiate(laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+            Instantiate(laserPrefab, transform.position + laserOffset, Quaternion.identity);
         }
+
+        audioSource.Play();
     }
 
     public void Damage()
@@ -111,8 +131,8 @@ public class Player : MonoBehaviour
         }
         else if (_playerLives < 1)
         {
-            Destroy(this.gameObject);
             spawnManager.OnPlayerDeath();
+            Destroy(this.gameObject);
         }
 
         uiManager.UpdateLivesDisplay(_playerLives);
