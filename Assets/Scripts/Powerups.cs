@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Powerups : MonoBehaviour
 { 
@@ -21,7 +19,6 @@ public class Powerups : MonoBehaviour
             Debug.LogError("Player script not found within Powerups script");
         }
     }
-
 
     void Update()
     {

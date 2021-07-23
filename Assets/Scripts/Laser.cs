@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
@@ -12,6 +10,7 @@ public class Laser : MonoBehaviour
 
     void Start()
     {
+        // Lasers getting instaniated after the player dies is causing errors in the Console Log
         player = GameObject.Find("Player").GetComponent<Player>();
 
         if(player == null)
@@ -57,7 +56,6 @@ public class Laser : MonoBehaviour
             {
                 Destroy(transform.parent.gameObject);
             }
-
             Destroy(this.gameObject);
         }
     }

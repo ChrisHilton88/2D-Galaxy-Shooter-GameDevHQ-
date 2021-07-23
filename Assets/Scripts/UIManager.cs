@@ -13,17 +13,26 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text gameOver;
     [SerializeField] private Text restartGame;
 
+    //[SerializeField] private Slider thrusterSlider;
+
     private GameManager gameManager;
+    //private Player player;
 
     void Start()
     {
         _scoreText.text = "Score: " + 0;
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        //player = GameObject.Find("Player").GetComponent<Player>();
 
         if(gameManager == null)
         {
             Debug.LogError("GameManager is NULL within UIManager");
         }
+
+        //if(player = null)
+        //{
+        //    Debug.LogError("Player is null : UIManager");
+        //}
     }
 
     public void UpdateScore(int playerScore)

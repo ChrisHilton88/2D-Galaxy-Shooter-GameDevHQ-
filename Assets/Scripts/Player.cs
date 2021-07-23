@@ -6,8 +6,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed = 12.5f;
     [SerializeField] private float _speedMultiplier = 1.5f;
-    [SerializeField] private float _thrusterSpeed;
     [SerializeField] private float _thrusterSpeedMultiplier = 1.5f;
+    [SerializeField] private float _minSpeed = 12.5f;
     [SerializeField] private float _maxSpeed = 25;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private int _playerLives = 3;
     [SerializeField] private int _score;
+    //[SerializeField] private int _shieldHits;
 
     SpawnManager spawnManager;
 
@@ -37,12 +38,17 @@ public class Player : MonoBehaviour
     [SerializeField] private bool _isSpeedBoostEnabled = false;
     [SerializeField] private bool _isShieldBoostEnabled = false;
 
+    //Color shieldColor;
+
+    //SpriteRenderer shieldSpriteRend;
+
 
     void Start()
     {
         spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         audioSource = GameObject.Find("Laser_Shot_Audio_Clip").GetComponent<AudioSource>();
+        //shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
 
         if (spawnManager == null)
         {
@@ -58,6 +64,11 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Audio clip is null");
         }
+
+        //if(shieldSpriteRend == null)
+        //{
+        //    Debug.Log("Shield is null");
+        //}
 
         playerShield.SetActive(false);
     }
@@ -78,6 +89,10 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             _speed *= _thrusterSpeedMultiplier; 
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _speed = _minSpeed;
         }
     }
 
@@ -114,25 +129,32 @@ public class Player : MonoBehaviour
     {
         if (_isShieldBoostEnabled == true)
         {
-            _isShieldBoostEnabled = false;
-            playerShield.SetActive(false);
-            return;
+            //ShieldDamage();
+
+            //return;
+        }
+        else
+        {
+            _playerLives--;
         }
 
-        _playerLives--;
-
-        if(_playerLives == 2)
+        switch (_playerLives)
         {
-            rightEngineThruster.SetActive(true);
-        }
-        else if(_playerLives == 1)
-        {
-            leftEngineThruster.SetActive(true);
-        }
-        else if (_playerLives < 1)
-        {
-            spawnManager.OnPlayerDeath();
-            Destroy(this.gameObject);
+            case 3:
+                break;
+            case 2:
+                rightEngineThruster.SetActive(true);
+                break;
+            case 1:
+                leftEngineThruster.SetActive(true);
+                break;
+            case 0:
+                spawnManager.OnPlayerDeath();
+                Destroy(gameObject);
+                break;
+            default:
+                Debug.Log("Invalid player lives");
+                break;
         }
 
         uiManager.UpdateLivesDisplay(_playerLives);
@@ -160,9 +182,20 @@ public class Player : MonoBehaviour
 
     public void ShieldBoostActive()
     {
+        //_shieldHits = 3;
+        //shieldSpriteRend.color = new Color(1f, 1f, 1f, 1f);
         _isShieldBoostEnabled = true;
         playerShield.SetActive(true);
+        Debug.Log("Shield boost is now active");
     }
+
+    //void ShieldBoostDeactivated()
+    //{
+    //    _shieldHits = 0;
+    //    _isShieldBoostEnabled = false;
+    //    playerShield.SetActive(false);
+    //    Debug.Log("Shield boost is now DEACTIVATED");
+    //}
 
     IEnumerator TripleShotPowerupRoutine()
     {
@@ -183,4 +216,35 @@ public class Player : MonoBehaviour
         uiManager.UpdateScore(_score);
     }
 
-}
+    //void ShieldDamage()
+    //{
+    //    _shieldHits--;
+
+    //    if (_shieldHits == 3)
+    //    {
+    //        shieldColor = shieldSpriteRend.color;
+    //        shieldColor.a = 1f;
+    //        shieldSpriteRend.color = shieldColor;
+    //        Debug.Log("Alpha is 1");
+    //    }
+    //    else if (_shieldHits == 2)
+    //    {
+    //        shieldColor = shieldSpriteRend.color;
+    //        shieldColor.a = 0.66f;
+    //        shieldSpriteRend.color = shieldColor;
+    //        Debug.Log("Alpha is 0.66f");
+    //    }
+    //    else if (_shieldHits == 1)
+    //    {
+    //        shieldColor = shieldSpriteRend.color;
+    //        shieldColor.a = 0.33f;
+    //        shieldSpriteRend.color = shieldColor;
+    //        Debug.Log("Alpha is 0.33f");
+    //    }
+    //    else if (_shieldHits < 1)
+    //    {
+    //        ShieldBoostDeactivated();
+    //    }
+    //}   
+
+}   
