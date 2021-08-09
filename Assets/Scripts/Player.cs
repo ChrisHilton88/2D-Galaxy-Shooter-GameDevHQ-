@@ -1,98 +1,103 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _speed = 12.5f;
-    [SerializeField] private float _speedMultiplier = 1.5f;
-    [SerializeField] private float _thrusterSpeedMultiplier = 1.5f;
-    [SerializeField] private float _minSpeed = 12.5f;
-    [SerializeField] private float _maxSpeed = 25;
-
-    private float _xBoundary = 8.5f, _yBoundary = 4.5f;
-
-    [SerializeField] private GameObject laserPrefab;
-    [SerializeField] private GameObject tripleShotPrefab;
-    [SerializeField] private GameObject rightEngineThruster;
-    [SerializeField] private GameObject leftEngineThruster;
-
-    AudioSource audioSource;
+    private float _speed = 10f;
+    private float _speedMultiplier = 1.5f;
+    private float _minSpeed = 10f;
+    private float _maxSpeed = 20f;
 
     private float _canFire = 0;
     private float _fireRate = 0.25f;
-
-    private Vector3 laserOffset = new Vector3(0, 0.5f, 0);
 
     [SerializeField] private int _playerLives = 3;
     [SerializeField] private int _score;
     [SerializeField] private int _shieldHits;
 
-    SpawnManager spawnManager;
+    private bool _isTripleShotEnabled = false;
+    private bool _isSpeedBoostEnabled = false;
+    private bool _isShieldBoostEnabled = false;
+    private bool _coroutinePlaying = false;
 
-    UIManager uiManager;
+    private float _xBoundary = 8.5f, _yBoundary = 4.5f;
 
+    private Vector3 _laserOffset = new Vector3(0, 0.5f, 0);
+
+    [SerializeField] private GameObject laserPrefab;
+    [SerializeField] private GameObject tripleShotPrefab;
+    [SerializeField] private GameObject rightEngineThruster;
+    [SerializeField] private GameObject leftEngineThruster;
     [SerializeField] private GameObject playerShield;
 
-    [SerializeField] private bool _isTripleShotEnabled = false;
-    [SerializeField] private bool _isSpeedBoostEnabled = false;
-    [SerializeField] private bool _isShieldBoostEnabled = false;
+    SpawnManager _spawnManager;
 
-    Color shieldColor;
+    UIManager _uiManager;
 
-    SpriteRenderer shieldSpriteRend;
+    ThrusterEngine _thrusterEngine;
+
+    AudioSource _audioSource;
+
+    SpriteRenderer _shieldSpriteRend;
+
+    SpriteRenderer _thrustRend;
+
+    Color _shieldColor;
+    Color _thrusterBoostColor = new Color(1f, 1f, 1f, 1f);
+    Color _mainEngine = new Color(1f, 1f, 1f, 0.75f);
+    Color _engineOverload = new Color(1f, 1f, 1f, 0f);
 
 
     void Start()
     {
-        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
-        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        audioSource = GameObject.Find("Laser_Shot_Audio_Clip").GetComponent<AudioSource>();
-        shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
+        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _audioSource = GameObject.Find("Laser_Shot_Audio_Clip").GetComponent<AudioSource>();
+        _shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
+        _thrustRend = GameObject.Find("Thruster").GetComponentInChildren<SpriteRenderer>();
+        _thrusterEngine = transform.Find("Thruster Engine").GetComponentInChildren<ThrusterEngine>();
 
-        if (spawnManager == null)
+        if (_spawnManager == null)
         {
             Debug.LogError("SpawnManager not found in Player");
         }
 
-        if (uiManager == null)
+        if (_uiManager == null)
         {
             Debug.LogError("UIManager not found in Canvas game object");
         }
 
-        if(audioSource == null)
+        if(_audioSource == null)
         {
             Debug.LogError("Audio clip is null");
         }
 
-        if(shieldSpriteRend == null)
+        if(_shieldSpriteRend == null)
         {
             Debug.Log("Shield is null");
         }
 
+        if(_thrustRend == null)
+        {
+            Debug.Log("Thruster is null");
+        }
+
+        if(_thrusterEngine == null)
+        {
+            Debug.Log("thruster engine is null");
+        }
+
         playerShield.SetActive(false);
+        _thrusterEngine.gameObject.SetActive(false);
     }
 
     void Update()
     {
         PlayerMovement();
-        ThrusterBoost();
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
-        }
-    }
-
-    void ThrusterBoost()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            _speed *= _thrusterSpeedMultiplier; 
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            _speed = _minSpeed;
         }
     }
 
@@ -119,10 +124,10 @@ public class Player : MonoBehaviour
 
         else
         {
-            Instantiate(laserPrefab, transform.position + laserOffset, Quaternion.identity);
+            Instantiate(laserPrefab, transform.position + _laserOffset, Quaternion.identity);
         }
 
-        audioSource.Play();
+        _audioSource.Play();
     }
 
     public void Damage()
@@ -149,15 +154,17 @@ public class Player : MonoBehaviour
                 leftEngineThruster.SetActive(true);
                 break;
             case 0:
-                spawnManager.OnPlayerDeath();
+                _spawnManager.OnPlayerDeath();
                 Destroy(gameObject);
                 break;
             default:
+                _spawnManager.OnPlayerDeath();
+                Destroy(gameObject);
                 Debug.Log("Invalid player lives");
                 break;
         }
 
-        uiManager.UpdateLivesDisplay(_playerLives);
+        _uiManager.UpdateLivesDisplay(_playerLives);
     }
 
     public void TripleShotActive()
@@ -180,13 +187,36 @@ public class Player : MonoBehaviour
         StartCoroutine(SpeedBoostPowerupRoutine());
     }
 
+    public void ThrusterBoostActivated()
+    {
+        _speed = _maxSpeed;
+        _thrustRend.color = _thrusterBoostColor;
+    }
+
+    public void ThrusterBoostDeactivated()
+    {
+        _speed = _minSpeed;
+        _thrustRend.color = _mainEngine;
+    }
+
+    public void ThrusterOverload()
+    {
+        if (_coroutinePlaying == false)
+        {
+            StartCoroutine(ThrusterEngineSmoke());
+        }
+        else
+        {
+            return;
+        }
+    }
+
     public void ShieldBoostActive()
     {
         _shieldHits = 3;
-        shieldSpriteRend.color = new Color(1f, 1f, 1f, 1f);
+        _shieldSpriteRend.color = new Color(1f, 1f, 1f, 1f);
         _isShieldBoostEnabled = true;
         playerShield.SetActive(true);
-        Debug.Log("Shield boost is now active");
     }
 
     void ShieldBoostDeactivated()
@@ -194,7 +224,6 @@ public class Player : MonoBehaviour
         _shieldHits = 0;
         _isShieldBoostEnabled = false;
         playerShield.SetActive(false);
-        Debug.Log("Shield boost is now DEACTIVATED");
     }
 
     IEnumerator TripleShotPowerupRoutine()
@@ -213,33 +242,24 @@ public class Player : MonoBehaviour
     public void AddPoints(int points)
     {
         _score += points;
-        uiManager.UpdateScore(_score);
+        _uiManager.UpdateScore(_score);
     }
 
     void ShieldDamage()
     {
         _shieldHits--;
 
-        if (_shieldHits == 3)
+        if (_shieldHits == 2)
         {
-            shieldColor = shieldSpriteRend.color;
-            shieldColor.a = 1f;
-            shieldSpriteRend.color = shieldColor;
-            Debug.Log("Alpha is 1");
-        }
-        else if (_shieldHits == 2)
-        {
-            shieldColor = shieldSpriteRend.color;
-            shieldColor.a = 0.66f;
-            shieldSpriteRend.color = shieldColor;
-            Debug.Log("Alpha is 0.66f");
+            _shieldColor = _shieldSpriteRend.color;
+            _shieldColor.a = 0.66f;
+            _shieldSpriteRend.color = _shieldColor;
         }
         else if (_shieldHits == 1)
         {
-            shieldColor = shieldSpriteRend.color;
-            shieldColor.a = 0.33f;
-            shieldSpriteRend.color = shieldColor;
-            Debug.Log("Alpha is 0.33f");
+            _shieldColor = _shieldSpriteRend.color;
+            _shieldColor.a = 0.33f;
+            _shieldSpriteRend.color = _shieldColor;
         }
         else if (_shieldHits < 1)
         {
@@ -247,4 +267,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    IEnumerator ThrusterEngineSmoke()
+    {
+        _thrustRend.enabled = false;
+        _coroutinePlaying = true;
+        _thrusterEngine.gameObject.SetActive(true);
+        _thrusterEngine.PlaySmokeAnimation();
+        yield return new WaitForSeconds(3.0f);
+        _thrustRend.enabled = true;
+        _coroutinePlaying = false;
+        _thrusterEngine.gameObject.SetActive(false);
+    }
 }   

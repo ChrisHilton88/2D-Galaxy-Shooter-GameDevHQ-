@@ -2,11 +2,11 @@
 
 public class Powerups : MonoBehaviour
 { 
-    [SerializeField] private int powerupSpeed = 3;
+    [SerializeField] private int _powerupSpeed = 3;
 
     Player player;
 
-    [SerializeField] private int powerupID;
+    [SerializeField] private int _powerupID;
 
     [SerializeField] private AudioClip _clip; 
 
@@ -22,7 +22,7 @@ public class Powerups : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.down * powerupSpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * _powerupSpeed * Time.deltaTime);
 
         if(transform.position.y < -6)
         {
@@ -36,7 +36,7 @@ public class Powerups : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(_clip, transform.position, 0.5f);
 
-            switch (powerupID)
+            switch (_powerupID)
             {
                 case 0:
                     player.TripleShotActive();

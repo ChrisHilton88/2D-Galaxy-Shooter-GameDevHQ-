@@ -8,7 +8,7 @@ public class SpawnManager : MonoBehaviour
 
     [SerializeField] private GameObject[] powerups;  
 
-    private bool stopSpawning = false;
+    private bool _stopSpawning = false;
 
 
     public void StartSpawning()
@@ -22,7 +22,7 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2.633f);
 
-        while (stopSpawning == false)
+        while (_stopSpawning == false)
         {
             Vector3 enemySpawnPos = new Vector3(Random.Range(-8f, 8f), 6f, 0);
             GameObject newEnemy = Instantiate(enemyPrefab, enemySpawnPos, Quaternion.identity);
@@ -35,7 +35,7 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2.633f);
 
-        while (stopSpawning == false)
+        while (_stopSpawning == false)
         {
             yield return null;
             Vector3 powerupSpawnPos = new Vector3(Random.Range(-8f, 8f), 6f, 0);
@@ -47,6 +47,6 @@ public class SpawnManager : MonoBehaviour
 
     public void OnPlayerDeath()
     {      
-        stopSpawning = true;
+        _stopSpawning = true;
     }
 }

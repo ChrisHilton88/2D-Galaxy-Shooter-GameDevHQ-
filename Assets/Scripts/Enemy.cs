@@ -1,41 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _enemySpeed = 3;
-
-    Player player;
-
-    Animator animator;
-
-    AudioSource audioSource;
+    private float _enemySpeed = 3;
+    private float _fireRate;
+    private float _canFire = -1f;
 
     [SerializeField] private GameObject _enemyLaser;
 
-    [SerializeField] private float fireRate;
-    [SerializeField] private float canFire = -1f;
-
     //[SerializeField] private bool isAlive;
+
+    Player _player;
+
+    Animator _animator;
+
+    AudioSource _audioSource;
+
 
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<Player>();
-        audioSource = GetComponent<AudioSource>();
-        animator = GetComponent<Animator>();
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        _audioSource = GetComponent<AudioSource>();
+        _animator = GetComponent<Animator>();
 
-        if (player == null)
+        if (_player == null)
         {
             Debug.Log("Player script not found in Enemy script");
         }
 
-        if(audioSource == null)
+        if(_audioSource == null)
         {
             Debug.LogError("AudioSource not found on Enemy script");
         }
 
-        if(animator == null)
+        if(_animator == null)
         {
             Debug.LogError("Animator not found on Enemy script");
         }
@@ -48,10 +46,10 @@ public class Enemy : MonoBehaviour
     {
         CalculateMovement();
 
-        if (Time.time > canFire)
+        if (Time.time > _canFire)
         {
-            fireRate = Random.Range(1f, 4f);
-            canFire = Time.time + fireRate;
+            _fireRate = Random.Range(1f, 4f);
+            _canFire = Time.time + _fireRate;
             GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
             Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
 
@@ -77,25 +75,27 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Laser")
         {
-            Destroy(GetComponent<Collider2D>());
             //isAlive = false;
-            audioSource.Play();
+            _audioSource.Play();
             _enemySpeed = 0.25f;
-            animator.SetTrigger("OnEnemyDeath");
+            _animator.SetTrigger("OnEnemyDeath");
             Destroy(other.gameObject);
-            player.AddPoints(Random.Range(10, 21));
+            _player.AddPoints(Random.Range(10, 21));
             Destroy(this.gameObject, 2.633f);
+            Destroy(GetComponent<Collider2D>());
+            Destroy(GetComponent<Enemy>());
         }
 
         if(other.tag == "Player")
         {
-            Destroy(GetComponent<Collider2D>());
             //isAlive = false;
-            audioSource.Play();
+            _audioSource.Play();
             _enemySpeed = 0.25f;
-            animator.SetTrigger("OnEnemyDeath");
-            player.Damage();
+            _animator.SetTrigger("OnEnemyDeath");
+            _player.Damage();
             Destroy(this.gameObject, 2.633f);
+            Destroy(GetComponent<Collider2D>());
+            Destroy(GetComponent<Enemy>());
         }
     }
 

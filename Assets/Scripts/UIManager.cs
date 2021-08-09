@@ -13,26 +13,24 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text gameOver;
     [SerializeField] private Text restartGame;
 
-    //[SerializeField] private Slider thrusterSlider;
-
-    private GameManager gameManager;
-    //private Player player;
+    GameManager gameManager;
+    Player player;
 
     void Start()
     {
         _scoreText.text = "Score: " + 0;
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        //player = GameObject.Find("Player").GetComponent<Player>();
+        player = GameObject.Find("Player").GetComponent<Player>();
 
         if(gameManager == null)
         {
             Debug.LogError("GameManager is NULL within UIManager");
         }
 
-        //if(player = null)
-        //{
-        //    Debug.LogError("Player is null : UIManager");
-        //}
+        if(player = null)
+        {
+            Debug.LogError("Player is null : UIManager");
+        }
     }
 
     public void UpdateScore(int playerScore)
@@ -42,6 +40,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateLivesDisplay(int currentLives)
     {
+        // Out of bounds index array erro when the player is on one life and they receive 2 hits from the lasers - NEED TO FIX
         _livesIMG.sprite = _spriteLives[currentLives];
 
         if(currentLives < 1)

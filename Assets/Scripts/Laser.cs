@@ -4,13 +4,12 @@ public class Laser : MonoBehaviour
 {
     Player player;
 
-    public int laserSpeed = 5;
+    private int _laserSpeed = 5;
 
-    [SerializeField] private bool _isEnemy = false;
+    private bool _isEnemy = false;
 
     void Start()
     {
-        // Lasers getting instaniated after the player dies is causing errors in the Console Log
         player = GameObject.Find("Player").GetComponent<Player>();
 
         if(player == null)
@@ -33,7 +32,7 @@ public class Laser : MonoBehaviour
 
     void MoveUp()
     {
-        transform.Translate(Vector3.up * laserSpeed * Time.deltaTime);
+        transform.Translate(Vector3.up * _laserSpeed * Time.deltaTime);
 
         if (transform.position.y > 6)
         {
@@ -48,7 +47,7 @@ public class Laser : MonoBehaviour
 
     void MoveDown()
     {
-        transform.Translate(Vector3.down * laserSpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * _laserSpeed * Time.deltaTime);
 
         if (transform.position.y < -6)
         {
