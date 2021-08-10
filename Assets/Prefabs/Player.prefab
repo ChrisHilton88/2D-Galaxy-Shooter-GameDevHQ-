@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 7753021655599376517}
   - component: {fileID: 1158390983}
   - component: {fileID: 2002869414}
+  - component: {fileID: 2578662816247476845}
   m_Layer: 0
   m_Name: Thruster
   m_TagString: Player
@@ -416,10 +417,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _thrusterPercent: 100
-  _thrustDecrease: 0.5
-  _thrustIncrease: 0.25
-  isOverloaded: 0
-  coroutinePlaying: 0
 --- !u!95 &2002869414
 Animator:
   serializedVersion: 3
@@ -439,6 +436,102 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!82 &2578662816247476845
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5655066835729468950}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 7f96167ad7671444b80c8424a7887b2e, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 0.58060837
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5737445092587079232
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,24 +747,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a889aad22f14a74da660b6dcaedaf1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
-  _speedMultiplier: 1.5
-  _minSpeed: 10
-  _maxSpeed: 20
+  _playerLives: 3
+  _score: 0
+  _shieldHits: 0
   laserPrefab: {fileID: 1636378947955088002, guid: 222915e0a3340fb429cf6d976927fff8,
     type: 3}
   tripleShotPrefab: {fileID: 2717410472087704933, guid: e3fd82391bcef24438fa56c5d614de6c,
     type: 3}
   rightEngineThruster: {fileID: 1618000424810561952}
   leftEngineThruster: {fileID: 3475666281030861348}
-  _playerLives: 3
-  _score: 0
-  _shieldHits: 0
   playerShield: {fileID: 792019825471899926}
-  _isTripleShotEnabled: 0
-  _isSpeedBoostEnabled: 0
-  _isShieldBoostEnabled: 0
-  _coroutinePlaying: 0
 --- !u!61 &8842245950958977651
 BoxCollider2D:
   m_ObjectHideFlags: 0

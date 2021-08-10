@@ -45,7 +45,6 @@ public class Player : MonoBehaviour
     Color _shieldColor;
     Color _thrusterBoostColor = new Color(1f, 1f, 1f, 1f);
     Color _mainEngine = new Color(1f, 1f, 1f, 0.75f);
-    Color _engineOverload = new Color(1f, 1f, 1f, 0f);
 
 
     void Start()
@@ -213,10 +212,10 @@ public class Player : MonoBehaviour
 
     public void ShieldBoostActive()
     {
+        playerShield.SetActive(true);
         _shieldHits = 3;
         _shieldSpriteRend.color = new Color(1f, 1f, 1f, 1f);
         _isShieldBoostEnabled = true;
-        playerShield.SetActive(true);
     }
 
     void ShieldBoostDeactivated()
