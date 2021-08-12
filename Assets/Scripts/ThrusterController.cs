@@ -13,8 +13,9 @@ public class ThrusterController : MonoBehaviour
 
     AudioSource _audioSource;
 
-    public AudioClip _rechargeThrusterClip;
-    public AudioClip _overloadAlarm;
+    [SerializeField] AudioClip _rechargeThrusterClip;
+    [SerializeField] AudioClip _overloadAlarmClip;
+    [SerializeField] AudioClip _thrusterBoosterClip;
 
     Color _thrustGaugeOverload = new Color(1, 0, 0, 1);
     Color _thrustGaugeNormal = new Color(0, 0, 1, 1);
@@ -28,7 +29,6 @@ public class ThrusterController : MonoBehaviour
 
     private bool _isOverloaded = false;
     private bool _coroutinePlaying = false;
-    private bool _hasPlayedAudioClip = false;
 
     void Start()
     {
@@ -70,6 +70,7 @@ public class ThrusterController : MonoBehaviour
     {
         _thrusterBar.value = _thrusterPercent;
         ThrusterBoost();
+        PlayAudio();
     }
 
     void ThrusterBoost()
@@ -79,25 +80,18 @@ public class ThrusterController : MonoBehaviour
             _player.ThrusterBoostActivated();
             _thrusterPercent -= _thrustDecrease;
 
-            if(_thrusterPercent <= _minThrusterPercent)
+            if (_thrusterPercent <= _minThrusterPercent)
             {
-                _audioSource.clip = _overloadAlarm;
-                _audioSource.volume = 0.1f;
-                _audioSource.Play();
-                _thrusterPercent = _minThrusterPercent;
-                _isOverloaded = true;
-                _player.ThrusterOverload();
-                StartCoroutine(ThrusterOverloadRoutine());
+                EngineOverload();
             }
         }
         else if (Input.GetKey(KeyCode.LeftShift) && _thrusterPercent == _minThrusterPercent)
         {
-            if(_coroutinePlaying == true)
+            if (_coroutinePlaying == true)
             {
                 return;
             }
         }
-
         else
         {
             _player.ThrusterBoostDeactivated();
@@ -111,19 +105,49 @@ public class ThrusterController : MonoBehaviour
             if (_isOverloaded == false && _thrusterPercent < _maxThrusterPercent)
             {
                 _thrusterPercent += _thrustIncrease;
-
-                if (_audioSource.isPlaying == false && _thrusterPercent <= _maxThrusterPercent)
-                {
-                    _audioSource.Play();
-                    _audioSource.volume = 0.4f;
-                    _audioSource.clip = _rechargeThrusterClip;
-                }
-                else
-                {
-                    return;
-                }
             }
         }
+    }
+
+    private void EngineOverload()
+    {
+        _thrusterPercent = _minThrusterPercent;
+        _isOverloaded = true;
+        _player.ThrusterOverload();
+        StartCoroutine(ThrusterOverloadRoutine());
+    }
+
+    void PlayAudio()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _isOverloaded == false)
+        {
+            PlayThrusterBoostClip();
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift) && _isOverloaded == false)
+        {
+            PlayThrusterRechargeClip();
+        }
+    }
+
+    void PlayThrusterBoostClip()
+    {
+        _audioSource.clip = _thrusterBoosterClip;
+        _audioSource.volume = 1f;
+        _audioSource.Play();
+    }
+
+    void PlayOverloadAlarmClip()
+    {
+        _audioSource.clip = _overloadAlarmClip;
+        _audioSource.volume = 0.1f;
+        _audioSource.Play();
+    }
+
+    void PlayThrusterRechargeClip()
+    {
+        _audioSource.clip = _rechargeThrusterClip;
+        _audioSource.volume = 0.5f;
+        _audioSource.Play();
     }
 
     IEnumerator ThrusterOverloadRoutine()
@@ -131,8 +155,10 @@ public class ThrusterController : MonoBehaviour
         while(_isOverloaded == true)
         {
             _coroutinePlaying = true;
+            PlayOverloadAlarmClip();
             StartCoroutine(ThrusterGaugeFlicker());
             yield return new WaitForSeconds(3.0f);
+            PlayThrusterRechargeClip();
             _backgroundFillImage.color = _backgroundFillWhite;
             _fillImage.color = _thrustGaugeNormal;
             _isOverloaded = false;

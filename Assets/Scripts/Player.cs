@@ -11,9 +11,13 @@ public class Player : MonoBehaviour
     private float _canFire = 0;
     private float _fireRate = 0.25f;
 
-    [SerializeField] private int _playerLives = 3;
-    [SerializeField] private int _score;
-    [SerializeField] private int _shieldHits;
+    private int _playerLives = 3;
+    private int _score;
+    private int _shieldHits;
+    [SerializeField] private int _maxAmmo = 15;
+    [SerializeField] private int _minAmmo = 0;
+    [SerializeField] private int _ammoCount;
+    private int _ammoShot = 1;
 
     private bool _isTripleShotEnabled = false;
     private bool _isSpeedBoostEnabled = false;
@@ -88,6 +92,7 @@ public class Player : MonoBehaviour
 
         playerShield.SetActive(false);
         _thrusterEngine.gameObject.SetActive(false);
+        _ammoCount = _maxAmmo;
     }
 
     void Update()
@@ -96,7 +101,14 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
-            FireLaser();
+            if (_maxAmmo > 0)
+            {
+                FireLaser();
+            }
+            else if(_maxAmmo <= 0)
+            {
+                return;
+            }
         }
     }
 
@@ -119,11 +131,23 @@ public class Player : MonoBehaviour
         if (_isTripleShotEnabled == true)
         {
             Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
+            _maxAmmo -= _ammoShot;
+
+            if(_maxAmmo <= 0)
+            {
+                _maxAmmo = _minAmmo;
+            }
         }
 
         else
         {
             Instantiate(laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+            _maxAmmo -= _ammoShot;
+
+            if (_maxAmmo <= 0)
+            {
+                _maxAmmo = _minAmmo;
+            }
         }
 
         _audioSource.Play();
