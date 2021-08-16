@@ -2,7 +2,7 @@
 
 public class Laser : MonoBehaviour
 {
-    Player player;
+    Player _player;
 
     private int _laserSpeed = 5;
 
@@ -10,9 +10,9 @@ public class Laser : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<Player>();
+        _player = GameObject.Find("Player").GetComponent<Player>();
 
-        if(player == null)
+        if(_player == null)
         {
             Debug.LogError("Player script not found in Laser script");
         }
@@ -63,7 +63,7 @@ public class Laser : MonoBehaviour
     {
         if(other.tag == "Player" && _isEnemy == true)
         {
-            player.Damage();
+            _player.Damage();
         }
     }
 

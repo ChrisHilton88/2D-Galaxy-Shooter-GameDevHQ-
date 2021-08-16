@@ -46,6 +46,9 @@ public class Player : MonoBehaviour
 
     SpriteRenderer _thrustRend;
 
+    [SerializeField] AudioClip _laserShotClip;
+    [SerializeField] AudioClip _emptyAmmoClip;
+
     Color _shieldColor;
     Color _thrusterBoostColor = new Color(1f, 1f, 1f, 1f);
     Color _mainEngine = new Color(1f, 1f, 1f, 0.75f);
@@ -55,7 +58,7 @@ public class Player : MonoBehaviour
     {
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        _audioSource = GameObject.Find("Laser_Shot_Audio_Clip").GetComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
         _shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
         _thrustRend = GameObject.Find("Thruster").GetComponentInChildren<SpriteRenderer>();
         _thrusterEngine = transform.Find("Thruster Engine").GetComponentInChildren<ThrusterEngine>();
@@ -107,6 +110,9 @@ public class Player : MonoBehaviour
             }
             else if(_maxAmmo <= 0)
             {
+                _uiManager.OutOfAmmo();
+                _audioSource.clip = _emptyAmmoClip;
+                _audioSource.Play();
                 return;
             }
         }
@@ -132,25 +138,26 @@ public class Player : MonoBehaviour
         {
             Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
             _maxAmmo -= _ammoShot;
-
-            if(_maxAmmo <= 0)
-            {
-                _maxAmmo = _minAmmo;
-            }
+            CheckAmmoCount();
         }
 
         else
         {
             Instantiate(laserPrefab, transform.position + _laserOffset, Quaternion.identity);
             _maxAmmo -= _ammoShot;
-
-            if (_maxAmmo <= 0)
-            {
-                _maxAmmo = _minAmmo;
-            }
+            CheckAmmoCount();
         }
 
+        _audioSource.clip = _laserShotClip;
         _audioSource.Play();
+    }
+
+    private void CheckAmmoCount()
+    {
+        if (_maxAmmo <= 0)
+        {
+            _maxAmmo = _minAmmo;
+        }
     }
 
     public void Damage()
