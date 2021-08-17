@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
@@ -98,6 +99,7 @@ public class Enemy : MonoBehaviour
             Destroy(GetComponent<Enemy>());
         }
     }
+
 
     //IEnumerator EnemyLaserRoutine()
     //{

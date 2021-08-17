@@ -46,6 +46,8 @@ public class Player : MonoBehaviour
 
     SpriteRenderer _thrustRend;
 
+    CameraShake _cameraShake;
+
     [SerializeField] AudioClip _laserShotClip;
     [SerializeField] AudioClip _emptyAmmoClip;
 
@@ -62,6 +64,7 @@ public class Player : MonoBehaviour
         _shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
         _thrustRend = GameObject.Find("Thruster").GetComponentInChildren<SpriteRenderer>();
         _thrusterEngine = transform.Find("Thruster Engine").GetComponentInChildren<ThrusterEngine>();
+        _cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
 
         if (_spawnManager == null)
         {
@@ -91,6 +94,11 @@ public class Player : MonoBehaviour
         if(_thrusterEngine == null)
         {
             Debug.Log("thruster engine is null");
+        }
+
+        if(_cameraShake == null)
+        {
+            Debug.Log("Camera Shake is null in Player script");
         }
 
         playerShield.SetActive(false);
@@ -165,12 +173,12 @@ public class Player : MonoBehaviour
         if (_isShieldBoostEnabled == true)
         {
             ShieldDamage();
-
             return;
         }
         else
         {
             _playerLives--;
+            _cameraShake.CallCameraShake();
         }
 
         switch (_playerLives)
