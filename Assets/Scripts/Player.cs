@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int _maxAmmo = 15;
     [SerializeField] private int _minAmmo = 0;
     [SerializeField] private int _ammoCount;
-    private int _ammoShot = 1;
+    [SerializeField] private int _ammoShot = 1;
 
     private bool _isTripleShotEnabled = false;
     private bool _isSpeedBoostEnabled = false;
@@ -112,11 +112,11 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
-            if (_maxAmmo > 0)
+            if (_ammoCount > 0)
             {
                 FireLaser();
             }
-            else if(_maxAmmo <= 0)
+            else if(_ammoCount <= 0)
             {
                 _uiManager.OutOfAmmo();
                 _audioSource.clip = _emptyAmmoClip;
@@ -145,14 +145,14 @@ public class Player : MonoBehaviour
         if (_isTripleShotEnabled == true)
         {
             Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
-            _maxAmmo -= _ammoShot;
+            _ammoCount -= _ammoShot;
             CheckAmmoCount();
         }
 
         else
         {
             Instantiate(laserPrefab, transform.position + _laserOffset, Quaternion.identity);
-            _maxAmmo -= _ammoShot;
+            _ammoCount -= _ammoShot;
             CheckAmmoCount();
         }
 
@@ -162,9 +162,9 @@ public class Player : MonoBehaviour
 
     private void CheckAmmoCount()
     {
-        if (_maxAmmo <= 0)
+        if (_ammoCount <= 0)
         {
-            _maxAmmo = _minAmmo;
+            _ammoCount = _minAmmo;
         }
     }
 
@@ -255,6 +255,11 @@ public class Player : MonoBehaviour
         _shieldHits = 3;
         _shieldSpriteRend.color = new Color(1f, 1f, 1f, 1f);
         _isShieldBoostEnabled = true;
+    }
+
+    public void AmmoRefillActive()
+    {
+        _ammoCount = _maxAmmo;
     }
 
     void ShieldBoostDeactivated()

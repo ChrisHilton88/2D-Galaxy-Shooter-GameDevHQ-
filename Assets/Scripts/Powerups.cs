@@ -40,15 +40,19 @@ public class Powerups : MonoBehaviour
             {
                 case 0:
                     player.TripleShotActive();
-                    Destroy(this.gameObject);
+                    Destroy(gameObject);
                     break;
                 case 1:
                     player.SpeedBoostActive();
-                    Destroy(this.gameObject);
+                    Destroy(gameObject);
                     break;
                 case 2:
                     player.ShieldBoostActive();
-                    Destroy(this.gameObject);
+                    Destroy(gameObject);
+                    break;
+                case 3:
+                    player.AmmoRefillActive();
+                    Destroy(gameObject);
                     break;
                 default:
                     Debug.Log("Unknown value");
