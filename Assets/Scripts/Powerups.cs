@@ -34,7 +34,7 @@ public class Powerups : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            AudioSource.PlayClipAtPoint(_clip, transform.position, 0.5f);
+            AudioSource.PlayClipAtPoint(_clip, transform.position, 2f);
 
             switch (_powerupID)
             {
@@ -52,6 +52,10 @@ public class Powerups : MonoBehaviour
                     break;
                 case 3:
                     player.AmmoRefillActive();
+                    Destroy(gameObject);
+                    break;
+                case 4:
+                    player.HealthRefillActive();
                     Destroy(gameObject);
                     break;
                 default:

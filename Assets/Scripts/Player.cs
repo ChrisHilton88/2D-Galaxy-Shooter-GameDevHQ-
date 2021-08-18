@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     private float _canFire = 0;
     private float _fireRate = 0.25f;
 
-    private int _playerLives = 3;
+    [SerializeField] private int _playerLives = 3;
     private int _score;
     private int _shieldHits;
     [SerializeField] private int _maxAmmo = 15;
@@ -202,6 +202,7 @@ public class Player : MonoBehaviour
                 break;
         }
 
+        // Call the method passing in the player lives parameter. 
         _uiManager.UpdateLivesDisplay(_playerLives);
     }
 
@@ -260,6 +261,19 @@ public class Player : MonoBehaviour
     public void AmmoRefillActive()
     {
         _ammoCount = _maxAmmo;
+    }
+
+    public void HealthRefillActive()
+    {
+        if(_playerLives < 3)
+        {
+            _playerLives++;
+            _uiManager.UpdateLivesDisplay(_playerLives);
+        }
+        else
+        {
+            return;
+        }
     }
 
     void ShieldBoostDeactivated()
