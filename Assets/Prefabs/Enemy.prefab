@@ -101,6 +101,8 @@ MonoBehaviour:
   _enemySpeed: 3
   _enemyLaser: {fileID: 7449664470445449646, guid: 7143fe459b87cc14ea795f4f4506551d,
     type: 3}
+  fireRate: 0
+  canFire: -1
 --- !u!61 &-7354461852043780655
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,7 +149,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!95 &7696061516544847856
 Animator:
   serializedVersion: 3

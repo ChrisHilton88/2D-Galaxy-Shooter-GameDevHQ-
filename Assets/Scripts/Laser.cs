@@ -1,20 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    Player player;
+    Player _player;
 
-    public int laserSpeed = 5;
+    private int _laserSpeed = 5;
 
-    [SerializeField] private bool _isEnemy = false;
+    private bool _isEnemy = false;
 
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<Player>();
+        _player = GameObject.Find("Player").GetComponent<Player>();
 
-        if(player == null)
+        if(_player == null)
         {
             Debug.LogError("Player script not found in Laser script");
         }
@@ -34,7 +32,7 @@ public class Laser : MonoBehaviour
 
     void MoveUp()
     {
-        transform.Translate(Vector3.up * laserSpeed * Time.deltaTime);
+        transform.Translate(Vector3.up * _laserSpeed * Time.deltaTime);
 
         if (transform.position.y > 6)
         {
@@ -49,7 +47,7 @@ public class Laser : MonoBehaviour
 
     void MoveDown()
     {
-        transform.Translate(Vector3.down * laserSpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * _laserSpeed * Time.deltaTime);
 
         if (transform.position.y < -6)
         {
@@ -57,7 +55,6 @@ public class Laser : MonoBehaviour
             {
                 Destroy(transform.parent.gameObject);
             }
-
             Destroy(this.gameObject);
         }
     }
@@ -66,7 +63,7 @@ public class Laser : MonoBehaviour
     {
         if(other.tag == "Player" && _isEnemy == true)
         {
-            player.Damage();
+            _player.Damage();
         }
     }
 

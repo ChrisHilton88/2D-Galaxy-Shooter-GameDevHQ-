@@ -3,11 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private bool isGameOver = false;
+    private bool _isGameOver = false;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R) && isGameOver == true)
+        if (Input.GetKeyDown(KeyCode.R) && _isGameOver == true)
         {
             SceneManager.LoadScene(1);
         }
@@ -20,6 +20,6 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        isGameOver = true;
+        _isGameOver = true;
     }
 }
