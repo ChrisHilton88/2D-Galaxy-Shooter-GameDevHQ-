@@ -119,6 +119,7 @@ public class Player : MonoBehaviour
             if (_ammoCount > 0)
             {
                 FireLaser();
+                _uiManager.UpdateAmmoDisplay(_ammoCount, _maxAmmo);
             }
             else if(_ammoCount <= 0)
             {
@@ -128,6 +129,8 @@ public class Player : MonoBehaviour
                 return;
             }
         }
+
+
     }
 
     void PlayerMovement()
@@ -285,6 +288,7 @@ public class Player : MonoBehaviour
     public void AmmoRefillActive()
     {
         _ammoCount = _maxAmmo;
+        _uiManager.UpdateAmmoDisplay(_ammoCount, _maxAmmo);
     }
 
     public void HealthRefillActive()

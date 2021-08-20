@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private Text _scoreText;
+    [SerializeField] private Text _ammoDisplay;
     [SerializeField] private Text _outOfAmmo;
 
     [SerializeField] private Image _livesIMG;
@@ -52,14 +53,15 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    IEnumerator GameOverFlicker()
+    public void OutOfAmmo()
     {
-        while (true)
+        if (_coroutinePlaying == false)
         {
-            _gameOver.gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.5f);
-            _gameOver.gameObject.SetActive(false);
-            yield return new WaitForSeconds(0.5f);
+            StartCoroutine(OutOfAmmoRoutine());
+        }
+        else
+        {
+            return;
         }
     }
 
@@ -70,15 +72,19 @@ public class UIManager : MonoBehaviour
         _restartGame.gameObject.SetActive(true);
     }
 
-    public void OutOfAmmo()
+    public void UpdateAmmoDisplay(int currentAmmo, int maxAmmo)
     {
-        if(_coroutinePlaying == false)
+        _ammoDisplay.text =  currentAmmo + "/" + maxAmmo;
+    }
+
+    IEnumerator GameOverFlicker()
+    {
+        while (true)
         {
-            StartCoroutine(OutOfAmmoRoutine());
-        }
-        else
-        {
-            return;
+            _gameOver.gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+            _gameOver.gameObject.SetActive(false);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
