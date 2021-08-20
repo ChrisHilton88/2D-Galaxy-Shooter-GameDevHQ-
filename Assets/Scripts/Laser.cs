@@ -65,6 +65,11 @@ public class Laser : MonoBehaviour
         {
             _player.Damage();
         }
+
+        if(other.tag == "MegaLaser")
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void AssignEnemyLaser()

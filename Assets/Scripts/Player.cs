@@ -11,28 +11,32 @@ public class Player : MonoBehaviour
     private float _canFire = 0;
     private float _fireRate = 0.25f;
 
-    [SerializeField] private int _playerLives = 3;
+    private int _playerLives = 3;
     private int _score;
     private int _shieldHits;
-    [SerializeField] private int _maxAmmo = 15;
-    [SerializeField] private int _minAmmo = 0;
-    [SerializeField] private int _ammoCount;
-    [SerializeField] private int _ammoShot = 1;
+    private int _maxAmmo = 15;
+    private int _minAmmo = 0;
+    private int _ammoCount;
+    private int _ammoShot = 1;
 
     private bool _isTripleShotEnabled = false;
     private bool _isSpeedBoostEnabled = false;
     private bool _isShieldBoostEnabled = false;
+    private bool _isMegaLaserEnabled = false;
+    private bool _isMegaLaserActive = false;
     private bool _coroutinePlaying = false;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
 
     private Vector3 _laserOffset = new Vector3(0, 0.5f, 0);
+    private Vector3 _megaLaserOffset = new Vector3(0, 5.25f, 0);
 
-    [SerializeField] private GameObject laserPrefab;
-    [SerializeField] private GameObject tripleShotPrefab;
-    [SerializeField] private GameObject rightEngineThruster;
-    [SerializeField] private GameObject leftEngineThruster;
-    [SerializeField] private GameObject playerShield;
+    [SerializeField] private GameObject _laserPrefab;
+    [SerializeField] private GameObject _tripleShotPrefab;
+    [SerializeField] private GameObject _megaLaserPrefab;
+    [SerializeField] private GameObject _rightEngineThruster;
+    [SerializeField] private GameObject _leftEngineThruster;
+    [SerializeField] private GameObject _playerShield;
 
     SpawnManager _spawnManager;
 
@@ -101,7 +105,7 @@ public class Player : MonoBehaviour
             Debug.Log("Camera Shake is null in Player script");
         }
 
-        playerShield.SetActive(false);
+        _playerShield.SetActive(false);
         _thrusterEngine.gameObject.SetActive(false);
         _ammoCount = _maxAmmo;
     }
@@ -144,14 +148,28 @@ public class Player : MonoBehaviour
 
         if (_isTripleShotEnabled == true)
         {
-            Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
+            Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
             _ammoCount -= _ammoShot;
             CheckAmmoCount();
         }
 
+        else if (_isMegaLaserEnabled == true)
+        {
+            if (GameObject.Find("Mega_Laser(Clone)") != null)
+            {
+                return;
+            }
+            else
+            {
+                GameObject _megaLas = Instantiate(_megaLaserPrefab, transform.position + _megaLaserOffset, Quaternion.identity);
+                _megaLas.transform.parent = transform;
+                Destroy(_megaLas, 3.0f);
+            }
+        }
+
         else
         {
-            Instantiate(laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+            Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
             _ammoCount -= _ammoShot;
             CheckAmmoCount();
         }
@@ -186,10 +204,10 @@ public class Player : MonoBehaviour
             case 3:
                 break;
             case 2:
-                rightEngineThruster.SetActive(true);
+                _rightEngineThruster.SetActive(true);
                 break;
             case 1:
-                leftEngineThruster.SetActive(true);
+                _leftEngineThruster.SetActive(true);
                 break;
             case 0:
                 _spawnManager.OnPlayerDeath();
@@ -210,6 +228,12 @@ public class Player : MonoBehaviour
     {
         _isTripleShotEnabled = true;
         StartCoroutine(TripleShotPowerupRoutine());
+    }
+
+    public void MegaLaserActive()
+    {
+        _isMegaLaserEnabled = true;
+        StartCoroutine(MegaLaserPowerupRoutine());
     }
 
     public void SpeedBoostActive()
@@ -252,7 +276,7 @@ public class Player : MonoBehaviour
 
     public void ShieldBoostActive()
     {
-        playerShield.SetActive(true);
+        _playerShield.SetActive(true);
         _shieldHits = 3;
         _shieldSpriteRend.color = new Color(1f, 1f, 1f, 1f);
         _isShieldBoostEnabled = true;
@@ -280,7 +304,7 @@ public class Player : MonoBehaviour
     {
         _shieldHits = 0;
         _isShieldBoostEnabled = false;
-        playerShield.SetActive(false);
+        _playerShield.SetActive(false);
     }
 
     IEnumerator TripleShotPowerupRoutine()
@@ -294,6 +318,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         _speed /= _speedMultiplier;
         _isSpeedBoostEnabled = false;
+    }
+
+    IEnumerator MegaLaserPowerupRoutine()
+    {
+        yield return new WaitForSeconds(3.0f);
+        _isMegaLaserEnabled = false;
     }
 
     public void AddPoints(int points)
