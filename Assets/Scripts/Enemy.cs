@@ -76,28 +76,34 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Laser")
         {
-            //isAlive = false;
-            _audioSource.Play();
-            _enemySpeed = 0.25f;
-            _animator.SetTrigger("OnEnemyDeath");
-            Destroy(other.gameObject);
+            CollisionExplosion();
             _player.AddPoints(Random.Range(10, 21));
-            Destroy(this.gameObject, 2.633f);
-            Destroy(GetComponent<Collider2D>());
-            Destroy(GetComponent<Enemy>());
+            Destroy(other.gameObject);
         }
 
         if(other.tag == "Player")
         {
-            //isAlive = false;
-            _audioSource.Play();
-            _enemySpeed = 0.25f;
-            _animator.SetTrigger("OnEnemyDeath");
+            CollisionExplosion();
             _player.Damage();
-            Destroy(this.gameObject, 2.633f);
-            Destroy(GetComponent<Collider2D>());
-            Destroy(GetComponent<Enemy>());
+
         }
+
+        if (other.tag == "MegaLaser")
+        {
+            CollisionExplosion();
+            _player.AddPoints(Random.Range(10, 21));
+        }
+    }
+
+    void CollisionExplosion()
+    {
+        //isAlive = false;
+        _audioSource.Play();
+        _enemySpeed = 0.25f;
+        _animator.SetTrigger("OnEnemyDeath");
+        Destroy(this.gameObject, 2.633f);
+        Destroy(GetComponent<Collider2D>());
+        Destroy(GetComponent<Enemy>());
     }
 
 
