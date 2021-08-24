@@ -753,16 +753,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a889aad22f14a74da660b6dcaedaf1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxAmmo: 15
-  _minAmmo: 0
-  _ammoCount: 0
-  laserPrefab: {fileID: 1636378947955088002, guid: 222915e0a3340fb429cf6d976927fff8,
+  _speed: 10
+  _noSpeed: 20
+  _laserPrefab: {fileID: 1636378947955088002, guid: 222915e0a3340fb429cf6d976927fff8,
     type: 3}
-  tripleShotPrefab: {fileID: 2717410472087704933, guid: e3fd82391bcef24438fa56c5d614de6c,
+  _tripleShotPrefab: {fileID: 2717410472087704933, guid: e3fd82391bcef24438fa56c5d614de6c,
     type: 3}
-  rightEngineThruster: {fileID: 1618000424810561952}
-  leftEngineThruster: {fileID: 3475666281030861348}
-  playerShield: {fileID: 792019825471899926}
+  _megaLaserPrefab: {fileID: 693698501723933376, guid: ba08625bcf761c64b98483e175db8a8e,
+    type: 3}
+  _rightEngineThruster: {fileID: 1618000424810561952}
+  _leftEngineThruster: {fileID: 3475666281030861348}
+  _playerShield: {fileID: 792019825471899926}
   _laserShotClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _emptyAmmoClip: {fileID: 8300000, guid: eb6143798665cae428db0e57eadf511f, type: 3}
 --- !u!61 &8842245950958977651

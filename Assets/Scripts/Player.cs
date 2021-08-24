@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     private float _speedMultiplier = 1.5f;
     private float _minSpeed = 10f;
     private float _maxSpeed = 20f;
+    private float _noSpeed = 0f;
 
     private float _canFire = 0;
     private float _fireRate = 0.25f;
@@ -22,8 +23,8 @@ public class Player : MonoBehaviour
     private bool _isTripleShotEnabled = false;
     private bool _isSpeedBoostEnabled = false;
     private bool _isShieldBoostEnabled = false;
-    private bool _isMegaLaserEnabled = false;
-    private bool _isMegaLaserActive = false;
+    private bool _isMegaLaserEnabled = false; 
+    private bool _isNegativePickupEnabled = false;
     private bool _coroutinePlaying = false;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
@@ -46,8 +47,8 @@ public class Player : MonoBehaviour
 
     AudioSource _audioSource;
 
+    SpriteRenderer _playerRend;
     SpriteRenderer _shieldSpriteRend;
-
     SpriteRenderer _thrustRend;
 
     CameraShake _cameraShake;
@@ -58,6 +59,7 @@ public class Player : MonoBehaviour
     Color _shieldColor;
     Color _thrusterBoostColor = new Color(1f, 1f, 1f, 1f);
     Color _mainEngine = new Color(1f, 1f, 1f, 0.75f);
+    Color _NegativePowerup = new Color(1f, 1f, 1f, 0.5f);
 
 
     void Start()
@@ -65,6 +67,7 @@ public class Player : MonoBehaviour
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
+        _playerRend = GetComponent<SpriteRenderer>();
         _shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
         _thrustRend = GameObject.Find("Thruster").GetComponentInChildren<SpriteRenderer>();
         _thrusterEngine = transform.Find("Thruster Engine").GetComponentInChildren<ThrusterEngine>();
@@ -83,6 +86,11 @@ public class Player : MonoBehaviour
         if(_audioSource == null)
         {
             Debug.LogError("Audio clip is null");
+        }
+
+        if(_playerRend == null)
+        {
+            Debug.Log("SpriteRenderer not found on the player");
         }
 
         if(_shieldSpriteRend == null)
@@ -114,23 +122,28 @@ public class Player : MonoBehaviour
     {
         PlayerMovement();
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        if(_isNegativePickupEnabled == false)
         {
-            if (_ammoCount > 0)
+            if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
             {
-                FireLaser();
-                _uiManager.UpdateAmmoDisplay(_ammoCount, _maxAmmo);
-            }
-            else if(_ammoCount <= 0)
-            {
-                _uiManager.OutOfAmmo();
-                _audioSource.clip = _emptyAmmoClip;
-                _audioSource.Play();
-                return;
+                if (_ammoCount > 0)
+                {
+                    FireLaser();
+                    _uiManager.UpdateAmmoDisplay(_ammoCount, _maxAmmo);
+                }
+                else if (_ammoCount <= 0)
+                {
+                    _uiManager.OutOfAmmo();
+                    _audioSource.clip = _emptyAmmoClip;
+                    _audioSource.Play();
+                    return;
+                }
             }
         }
-
-
+        else
+        {
+            return;
+        }
     }
 
     void PlayerMovement()
@@ -304,6 +317,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void NegativePickup()
+    {
+        _isNegativePickupEnabled = true;
+        StartCoroutine(NegativePickupRoutine());
+    }
+
     void ShieldBoostDeactivated()
     {
         _shieldHits = 0;
@@ -328,6 +347,30 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(3.0f);
         _isMegaLaserEnabled = false;
+    }
+
+    IEnumerator ThrusterEngineSmoke()
+    {
+        _thrustRend.enabled = false;
+        _coroutinePlaying = true;
+        _thrusterEngine.gameObject.SetActive(true);
+        _thrusterEngine.PlaySmokeAnimation();
+        yield return new WaitForSeconds(3.0f);
+        _thrustRend.enabled = true;
+        _coroutinePlaying = false;
+        _thrusterEngine.gameObject.SetActive(false);
+    }
+
+    IEnumerator NegativePickupRoutine()
+    {
+        _speed = _noSpeed;
+        _playerRend.color = _NegativePowerup;
+        _uiManager.EngineAndLasersDisabled();
+        yield return new WaitForSeconds(4f);
+        _speed = _minSpeed;
+        _playerRend.color = _thrusterBoostColor;
+        _uiManager.EngineAndLasersEnabled();
+        _isNegativePickupEnabled = false;
     }
 
     public void AddPoints(int points)
@@ -358,15 +401,5 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator ThrusterEngineSmoke()
-    {
-        _thrustRend.enabled = false;
-        _coroutinePlaying = true;
-        _thrusterEngine.gameObject.SetActive(true);
-        _thrusterEngine.PlaySmokeAnimation();
-        yield return new WaitForSeconds(3.0f);
-        _thrustRend.enabled = true;
-        _coroutinePlaying = false;
-        _thrusterEngine.gameObject.SetActive(false);
-    }
+
 }   

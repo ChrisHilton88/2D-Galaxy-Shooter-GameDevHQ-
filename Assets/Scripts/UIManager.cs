@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _scoreText;
     [SerializeField] private Text _ammoDisplay;
     [SerializeField] private Text _outOfAmmo;
+    [SerializeField] private Text _engineLasersDisabled;
 
     [SerializeField] private Image _livesIMG;
 
@@ -75,6 +76,16 @@ public class UIManager : MonoBehaviour
     public void UpdateAmmoDisplay(int currentAmmo, int maxAmmo)
     {
         _ammoDisplay.text =  currentAmmo + "/" + maxAmmo;
+    }
+
+    public void EngineAndLasersDisabled()
+    {
+        _engineLasersDisabled.gameObject.SetActive(true);
+    }
+
+    public void EngineAndLasersEnabled()
+    {
+        _engineLasersDisabled.gameObject.SetActive(false);
     }
 
     IEnumerator GameOverFlicker()

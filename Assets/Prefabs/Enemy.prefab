@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -198821601
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 3154912113cbb4a498df6f571c74e18c, type: 3}
   m_Color: {r: 1, g: 0.78447735, b: 0.6839622, a: 1}
   m_FlipX: 0
@@ -98,11 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00dd0a7e9bd6a664fa84ac2f0f8d32fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemySpeed: 3
   _enemyLaser: {fileID: 7449664470445449646, guid: 7143fe459b87cc14ea795f4f4506551d,
     type: 3}
-  fireRate: 0
-  canFire: -1
 --- !u!61 &-7354461852043780655
 BoxCollider2D:
   m_ObjectHideFlags: 0

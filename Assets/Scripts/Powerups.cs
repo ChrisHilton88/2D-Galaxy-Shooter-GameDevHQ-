@@ -5,10 +5,9 @@ public class Powerups : MonoBehaviour
 { 
     private int _powerupSpeed = 3;
 
-    // Added
-    private bool _isMegeLaserEnabled = false;
-
     Player player;
+
+    ThrusterController thrustCont;
 
     [SerializeField] private int _powerupID;
 
@@ -17,10 +16,16 @@ public class Powerups : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
+        thrustCont = GameObject.Find("Thruster").GetComponent<ThrusterController>();
 
         if(player == null)
         {
             Debug.LogError("Player script not found within Powerups script");
+        }
+
+        if(thrustCont == null)
+        {
+            Debug.LogError("ThrusterController script not found within the Powerups script");
         }
     }
 
@@ -62,9 +67,13 @@ public class Powerups : MonoBehaviour
                     player.HealthRefillActive();
                     Destroy(gameObject);
                     break;
-                    // Added
                 case 5:
                     player.MegaLaserActive();
+                    Destroy(gameObject);
+                    break;
+                case 6:
+                    player.NegativePickup();
+                    StartCoroutine(thrustCont.NegativePickupRoutine());
                     Destroy(gameObject);
                     break;
                 default:

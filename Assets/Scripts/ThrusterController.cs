@@ -29,6 +29,7 @@ public class ThrusterController : MonoBehaviour
 
     private bool _isOverloaded = false;
     private bool _coroutinePlaying = false;
+    private bool _isNegativePickupEnabled = false;
 
     void Start()
     {
@@ -94,22 +95,29 @@ public class ThrusterController : MonoBehaviour
         }
         else
         {
-            _player.ThrusterBoostDeactivated();
-
-            if (_thrusterPercent >= _maxThrusterPercent)
+            if(_isNegativePickupEnabled == false)
             {
-                _thrusterPercent = _maxThrusterPercent;
-                _audioSource.Stop();
+                _player.ThrusterBoostDeactivated();
+
+                if (_thrusterPercent >= _maxThrusterPercent)
+                {
+                    _thrusterPercent = _maxThrusterPercent;
+                    _audioSource.Stop();
+                }
+
+                if (_isOverloaded == false && _thrusterPercent < _maxThrusterPercent)
+                {
+                    _thrusterPercent += _thrustIncrease;
+                }
             }
-
-            if (_isOverloaded == false && _thrusterPercent < _maxThrusterPercent)
+            else
             {
-                _thrusterPercent += _thrustIncrease;
+                return;
             }
         }
     }
 
-    private void EngineOverload()
+    void EngineOverload()
     {
         _thrusterPercent = _minThrusterPercent;
         _isOverloaded = true;
@@ -177,6 +185,13 @@ public class ThrusterController : MonoBehaviour
             _fillImage.color = _backgroundFillWhite;
             yield return new WaitForSeconds(0.25f);
         }
+    }
+
+    public IEnumerator NegativePickupRoutine()
+    {
+        _isNegativePickupEnabled = true;
+        yield return new WaitForSeconds(4f);
+        _isNegativePickupEnabled = false;
     }
 }
 
