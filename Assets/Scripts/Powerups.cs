@@ -4,6 +4,11 @@ using UnityEngine;
 public class Powerups : MonoBehaviour
 { 
     private int _powerupSpeed = 3;
+    private int _magnetSpeed = 5;
+
+    private bool _isMagnetising = false;
+
+    Vector3 playerPos;
 
     Player player;
 
@@ -13,6 +18,8 @@ public class Powerups : MonoBehaviour
 
     [SerializeField] private AudioClip _clip; 
 
+
+
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
@@ -20,7 +27,7 @@ public class Powerups : MonoBehaviour
 
         if(player == null)
         {
-            Debug.LogError("Player script not found within Powerups script");
+            Debug.LogError("Player script not found in Powerups script");
         }
 
         if(thrustCont == null)
@@ -31,7 +38,14 @@ public class Powerups : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.down * _powerupSpeed * Time.deltaTime);
+        if (_isMagnetising)
+        {
+            PowerupMagnetMove();
+        }
+        else
+        {
+            transform.Translate(Vector3.down * _powerupSpeed * Time.deltaTime);
+        }
 
         if (transform.position.y < -6)
         {
@@ -82,4 +96,17 @@ public class Powerups : MonoBehaviour
             }
         }
     }
+
+    public void Magnetise()
+    {
+        _isMagnetising = true;
+    }
+
+     void PowerupMagnetMove()
+     {
+        playerPos = player.transform.position;
+        Vector3 direction = transform.position - playerPos;
+        direction = direction.normalized;
+        transform.position += direction * _magnetSpeed * Time.deltaTime;
+     }
 }

@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private float _speed = 10f;
+    private float _speed = 7.5f;
     private float _speedMultiplier = 1.5f;
-    private float _minSpeed = 10f;
+    private float _minSpeed = 7.5f;
     private float _maxSpeed = 20f;
     private float _noSpeed = 0f;
+    private float _magnetSpeed = 2f;
 
     private float _canFire = 0;
     private float _fireRate = 0.25f;
@@ -25,7 +26,8 @@ public class Player : MonoBehaviour
     private bool _isShieldBoostEnabled = false;
     private bool _isMegaLaserEnabled = false; 
     private bool _isNegativePickupEnabled = false;
-    private bool _coroutinePlaying = false;
+    private bool _thrusterEngineCoroutinePlaying = false;
+    private bool _isMagnetCooldownRoutinePlaying = false;
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
 
@@ -121,6 +123,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayerMovement();
+        MagnetActivated();
 
         if(_isNegativePickupEnabled == false)
         {
@@ -152,6 +155,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+        direction.Normalize();
 
         transform.Translate(direction * _speed * Time.deltaTime);
 
@@ -280,7 +284,7 @@ public class Player : MonoBehaviour
 
     public void ThrusterOverload()
     {
-        if (_coroutinePlaying == false)
+        if (_thrusterEngineCoroutinePlaying == false)
         {
             StartCoroutine(ThrusterEngineSmoke());
         }
@@ -330,55 +334,6 @@ public class Player : MonoBehaviour
         _playerShield.SetActive(false);
     }
 
-    IEnumerator TripleShotPowerupRoutine()
-    {
-        yield return new WaitForSeconds(5.0f);
-        _isTripleShotEnabled = false;
-    }
-
-    IEnumerator SpeedBoostPowerupRoutine()
-    {
-        yield return new WaitForSeconds(5.0f);
-        _speed /= _speedMultiplier;
-        _isSpeedBoostEnabled = false;
-    }
-
-    IEnumerator MegaLaserPowerupRoutine()
-    {
-        yield return new WaitForSeconds(3.0f);
-        _isMegaLaserEnabled = false;
-    }
-
-    IEnumerator ThrusterEngineSmoke()
-    {
-        _thrustRend.enabled = false;
-        _coroutinePlaying = true;
-        _thrusterEngine.gameObject.SetActive(true);
-        _thrusterEngine.PlaySmokeAnimation();
-        yield return new WaitForSeconds(3.0f);
-        _thrustRend.enabled = true;
-        _coroutinePlaying = false;
-        _thrusterEngine.gameObject.SetActive(false);
-    }
-
-    IEnumerator NegativePickupRoutine()
-    {
-        _speed = _noSpeed;
-        _playerRend.color = _NegativePowerup;
-        _uiManager.EngineAndLasersDisabled();
-        yield return new WaitForSeconds(4f);
-        _speed = _minSpeed;
-        _playerRend.color = _thrusterBoostColor;
-        _uiManager.EngineAndLasersEnabled();
-        _isNegativePickupEnabled = false;
-    }
-
-    public void AddPoints(int points)
-    {
-        _score += points;
-        _uiManager.UpdateScore(_score);
-    }
-
     void ShieldDamage()
     {
         _shieldHits--;
@@ -401,5 +356,91 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void AddPoints(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScore(_score);
+    }
 
+    void MagnetActivated()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && _isMagnetCooldownRoutinePlaying == false)
+        {
+            StartMagnet();
+        }
+        else if (Input.GetKeyDown(KeyCode.R) && _isMagnetCooldownRoutinePlaying == true)
+        {
+            Debug.Log("Magnet is cooling down");
+        }
+    }
+
+    void StartMagnet()
+    {
+        GameObject[] _powerupList = GameObject.FindGameObjectsWithTag("Powerup");
+
+        if (_powerupList != null)
+        {
+            for (int i = 0; i < _powerupList.Length; i++)
+            {
+                Powerups power = _powerupList[i].GetComponent<Powerups>();
+                power.Magnetise();
+                StartCoroutine(MagnetCooldownRoutine(10f));
+            }
+        }
+
+        if (_powerupList.Length == 0)
+        {
+            StartCoroutine(MagnetCooldownRoutine(5f));
+        }
+    }
+
+    IEnumerator TripleShotPowerupRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _isTripleShotEnabled = false;
+    }
+
+    IEnumerator SpeedBoostPowerupRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _speed /= _speedMultiplier;
+        _isSpeedBoostEnabled = false;
+    }
+
+    IEnumerator MegaLaserPowerupRoutine()
+    {
+        yield return new WaitForSeconds(3.0f);
+        _isMegaLaserEnabled = false;
+    }
+
+    IEnumerator ThrusterEngineSmoke()
+    {
+        _thrustRend.enabled = false;
+        _thrusterEngineCoroutinePlaying = true;
+        _thrusterEngine.gameObject.SetActive(true);
+        _thrusterEngine.PlaySmokeAnimation();
+        yield return new WaitForSeconds(3.0f);
+        _thrustRend.enabled = true;
+        _thrusterEngineCoroutinePlaying = false;
+        _thrusterEngine.gameObject.SetActive(false);
+    }
+
+    IEnumerator NegativePickupRoutine()
+    {
+        _speed = _noSpeed;
+        _playerRend.color = _NegativePowerup;
+        _uiManager.EngineAndLasersDisabled();
+        yield return new WaitForSeconds(4f);
+        _speed = _minSpeed;
+        _playerRend.color = _thrusterBoostColor;
+        _uiManager.EngineAndLasersEnabled();
+        _isNegativePickupEnabled = false;
+    }
+
+    IEnumerator MagnetCooldownRoutine(float time)
+    {
+        _isMagnetCooldownRoutinePlaying = true;
+        yield return new WaitForSeconds(time);
+        _isMagnetCooldownRoutinePlaying = false;
+    }
 }   
