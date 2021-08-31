@@ -123,3 +123,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _powerupID: 6
   _clip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _powerupExplosionPrefab: {fileID: 0}

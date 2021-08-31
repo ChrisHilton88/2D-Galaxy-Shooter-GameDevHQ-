@@ -3,9 +3,12 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private float _enemySpeed = 3;
+    private float _enemySpeed = 1;
     private float _fireRate;
-    private float _canFire = -1f;
+    private float _canFire = 2f;
+    private float _rayDistance = 6f;
+
+    private bool _rayShot;
 
     [SerializeField] private GameObject _enemyLaser;
 
@@ -16,6 +19,8 @@ public class Enemy : MonoBehaviour
     Animator _animator;
 
     AudioSource _audioSource;
+
+    Vector3 _rayOffset = new Vector3(0, -0.4f, 0);
 
 
     void Start()
@@ -46,18 +51,45 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         CalculateMovement();
+        EnemyFire();
+        RayCastShot();
+    }
 
+    void RayCastShot()
+    {
+        Debug.DrawRay(transform.position + _rayOffset, (-transform.up * _rayDistance), Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + _rayOffset, -transform.up, _rayDistance);
+        if (hit)
+        {
+            if (hit.collider.tag == "Powerup")
+            {
+                if(_rayShot == false)
+                {
+                    LaserFire();
+                    StartCoroutine(PowerupShootingCooldownRoutine());
+                }              
+            }
+        }
+    }
+
+    void EnemyFire()
+    {
         if (Time.time > _canFire)
         {
-            _fireRate = Random.Range(1f, 4f);
+            _fireRate = Random.Range(2f, 4f);
             _canFire = Time.time + _fireRate;
-            GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
-            Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+            LaserFire();
+        }
+    }
 
-            for (int i = 0; i < lasers.Length; i++)
-            {
-                lasers[i].AssignEnemyLaser();
-            }
+    void LaserFire()
+    {
+        GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
+        Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+
+        for (int i = 0; i < lasers.Length; i++)
+        {
+            lasers[i].AssignEnemyLaser();
         }
     }
 
@@ -81,11 +113,10 @@ public class Enemy : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        if(other.tag == "Player")
+        if (other.tag == "Player")
         {
             CollisionExplosion();
             _player.Damage();
-
         }
 
         if (other.tag == "MegaLaser")
@@ -106,6 +137,12 @@ public class Enemy : MonoBehaviour
         Destroy(GetComponent<Enemy>());
     }
 
+    IEnumerator PowerupShootingCooldownRoutine()
+    {
+        _rayShot = true;
+        yield return new WaitForSeconds(5.0f);
+        _rayShot = false;
+    }
 
     //IEnumerator EnemyLaserRoutine()
     //{

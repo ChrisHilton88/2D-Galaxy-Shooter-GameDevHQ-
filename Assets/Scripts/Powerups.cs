@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Powerups : MonoBehaviour
 { 
-    private int _powerupSpeed = 3;
+    private int _powerupSpeed = 0;
     private int _magnetSpeed = 5;
 
     private bool _isMagnetising = false;
@@ -16,8 +16,9 @@ public class Powerups : MonoBehaviour
 
     [SerializeField] private int _powerupID;
 
-    [SerializeField] private AudioClip _clip; 
+    [SerializeField] private AudioClip _clip;
 
+    [SerializeField] GameObject _powerupExplosionPrefab;
 
 
     void Start()
@@ -53,7 +54,7 @@ public class Powerups : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Player")
         {
@@ -95,6 +96,19 @@ public class Powerups : MonoBehaviour
                     break;
             }
         }
+
+        if(other.tag == "Enemy")
+        {
+            Instantiate(_powerupExplosionPrefab, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+
+        if (other.tag == "Laser")
+        {
+            Instantiate(_powerupExplosionPrefab, transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
     }
 
     public void Magnetise()
@@ -102,7 +116,7 @@ public class Powerups : MonoBehaviour
         _isMagnetising = true;
     }
 
-     void PowerupMagnetMove()
+    void PowerupMagnetMove()
      {
         playerPos = player.transform.position;
         Vector3 direction = transform.position - playerPos;

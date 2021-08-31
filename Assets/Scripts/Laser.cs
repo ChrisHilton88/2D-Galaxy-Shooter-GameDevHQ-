@@ -8,6 +8,9 @@ public class Laser : MonoBehaviour
 
     private bool _isEnemy = false;
 
+    [SerializeField] GameObject _explosionPrefab;
+
+
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
@@ -55,18 +58,20 @@ public class Laser : MonoBehaviour
             {
                 Destroy(transform.parent.gameObject);
             }
+
             Destroy(this.gameObject);
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Player" && _isEnemy == true)
+        if (other.tag == "Player")
         {
-            _player.Damage();
+            _player.Damage();            
+            Destroy(gameObject);
         }
 
-        if(other.tag == "MegaLaser")
+        if (other.tag == "MegaLaser")
         {
             Destroy(gameObject);
         }

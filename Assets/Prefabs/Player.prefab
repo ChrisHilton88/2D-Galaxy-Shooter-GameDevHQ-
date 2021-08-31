@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 333b0196b7a764df5a7768ead9b69dbc, type: 3}
-  m_Color: {r: 0.9579922, g: 0.97572035, b: 0.9811321, a: 0.53333336}
+  m_Color: {r: 0.9528302, g: 0.9310689, b: 0.9303578, a: 0.53333336}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -753,8 +753,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a889aad22f14a74da660b6dcaedaf1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
-  _noSpeed: 20
   _laserPrefab: {fileID: 1636378947955088002, guid: 222915e0a3340fb429cf6d976927fff8,
     type: 3}
   _tripleShotPrefab: {fileID: 2717410472087704933, guid: e3fd82391bcef24438fa56c5d614de6c,
@@ -776,7 +774,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.04652667, y: -0.67000866}
@@ -802,7 +800,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 7304489359145454105}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0

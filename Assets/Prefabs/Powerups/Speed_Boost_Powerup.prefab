@@ -124,6 +124,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _powerupID: 1
   _clip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _powerupExplosionPrefab: {fileID: 75265174542318318, guid: 0f309a4b379ffe946b12737109f14f4f,
+    type: 3}
 --- !u!95 &3219502653382018666
 Animator:
   serializedVersion: 3
