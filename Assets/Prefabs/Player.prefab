@@ -665,6 +665,7 @@ GameObject:
   - component: {fileID: 8842245950958977651}
   - component: {fileID: 6922421473267671906}
   - component: {fileID: 650814132}
+  - component: {fileID: 7552323060036357712}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -907,3 +908,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7552323060036357712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7304489359145454105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c813e33a07d1f3049a3b75e182f7e702, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _homingMissilePrefab: {fileID: 6952483669123971947, guid: 985dd3c3f312c6d43b672aa2361d043a,
+    type: 3}

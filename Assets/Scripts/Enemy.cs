@@ -124,6 +124,13 @@ public class Enemy : MonoBehaviour
             CollisionExplosion();
             _player.AddPoints(Random.Range(10, 21));
         }
+
+        if(other.tag == "Missile")
+        {
+            CollisionExplosion();
+            _player.AddPoints(Random.Range(10, 21));
+            Destroy(other.gameObject);
+        }
     }
 
     void CollisionExplosion()
