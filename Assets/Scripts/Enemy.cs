@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private float _enemySpeed = 1;
+    private float _enemySpeed = 3;
+    private float _minEnemySpeed = 3;
+    private float _ramSpeed = 10f;
     private float _fireRate;
     private float _canFire = 2f;
     private float _rayDistance = 6f;
+    private float _ramRayDistance = 4f;
 
-    private bool _rayShot;
+    private bool _powerupShotTrigger;
+    private bool _ramPlayerCoroutine;
 
     [SerializeField] private GameObject _enemyLaser;
 
@@ -19,6 +23,8 @@ public class Enemy : MonoBehaviour
     Animator _animator;
 
     AudioSource _audioSource;
+
+    WaitForSeconds _ramTime = new WaitForSeconds(0.5f);
 
     Vector3 _rayOffset = new Vector3(0, -0.4f, 0);
 
@@ -52,10 +58,11 @@ public class Enemy : MonoBehaviour
     {
         CalculateMovement();
         EnemyFire();
-        RayCastShot();
+        RayCastPowerupShoot();
+        RayCastRamPlayer();
     }
 
-    void RayCastShot()
+    void RayCastPowerupShoot()
     {
         Debug.DrawRay(transform.position + _rayOffset, (-transform.up * _rayDistance), Color.red);
         RaycastHit2D hit = Physics2D.Raycast(transform.position + _rayOffset, -transform.up, _rayDistance);
@@ -63,11 +70,28 @@ public class Enemy : MonoBehaviour
         {
             if (hit.collider.tag == "Powerup")
             {
-                if(_rayShot == false)
+                if (_powerupShotTrigger == false)
                 {
                     LaserFire();
-                    StartCoroutine(PowerupShootingCooldownRoutine());
-                }              
+                    StartCoroutine(CooldownRoutine(5.0f, _powerupShotTrigger, "Started Powerup Shot Cooldown", "Finished Powerup Shot Cooldown"));
+                }
+            }
+        }
+    }
+
+    void RayCastRamPlayer()
+    {
+        Debug.DrawRay(transform.position + _rayOffset, (-transform.up * _ramRayDistance), Color.yellow);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + _rayOffset, -transform.up, _ramRayDistance);
+        if (hit)
+        {
+            if(hit.collider.tag == "Player")
+            {
+                if(_ramPlayerCoroutine == false)
+                {
+                    StartCoroutine(EnemyRam());
+                    StartCoroutine(CooldownRoutine(5f, _ramPlayerCoroutine, "Started Ram Cooldown", "Finished Ram Cooldown"));
+                }
             }
         }
     }
@@ -78,7 +102,15 @@ public class Enemy : MonoBehaviour
         {
             _fireRate = Random.Range(2f, 4f);
             _canFire = Time.time + _fireRate;
-            LaserFire();
+
+            if(_ramPlayerCoroutine == true)
+            {
+                return;
+            }
+            else
+            {
+                LaserFire();
+            }
         }
     }
 
@@ -144,11 +176,18 @@ public class Enemy : MonoBehaviour
         Destroy(GetComponent<Enemy>());
     }
 
-    IEnumerator PowerupShootingCooldownRoutine()
+    IEnumerator EnemyRam()
     {
-        _rayShot = true;
-        yield return new WaitForSeconds(5.0f);
-        _rayShot = false;
+        _enemySpeed = _ramSpeed;
+        yield return _ramTime;
+        _enemySpeed = _minEnemySpeed;
+    }
+
+    IEnumerator CooldownRoutine(float time, bool trigger, string firstMessage, string secondMessage)
+    {
+        trigger = true;
+        yield return new WaitForSeconds(time);
+        trigger = false;
     }
 
     //IEnumerator EnemyLaserRoutine()

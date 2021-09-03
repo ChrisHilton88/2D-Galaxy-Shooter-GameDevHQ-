@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
     private float _minSpeed = 7.5f;
     private float _maxSpeed = 20f;
     private float _noSpeed = 0f;
-    private float _magnetSpeed = 2f;
 
     private float _canFire = 0;
     private float _fireRate = 0.25f;
@@ -240,7 +239,6 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        // Call the method passing in the player lives parameter. 
         _uiManager.UpdateLivesDisplay(_playerLives);
     }
 

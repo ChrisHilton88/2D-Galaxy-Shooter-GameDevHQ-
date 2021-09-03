@@ -6,7 +6,7 @@ public class Laser : MonoBehaviour
 
     private int _laserSpeed = 5;
 
-    private bool _isEnemy = false;
+    private bool _isEnemy;
 
     [SerializeField] GameObject _explosionPrefab;
 
