@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2831142331190068367}
   - component: {fileID: 3162576777999656475}
   - component: {fileID: 1921833901}
+  - component: {fileID: 8606554951579163935}
   m_Layer: 0
   m_Name: Triple_Shot_Powerup
   m_TagString: Powerup
@@ -119,7 +120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2831142331190068364}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c855485d1e28dd646a7758e60abfb3f1, type: 3}
+  m_Script: {fileID: 11500000, guid: 4fc54250f4fcbc94391a1e9e0fe1ef3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _powerupID: 0
@@ -145,3 +146,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8606554951579163935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2831142331190068364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8b31dacb9ffa3042b4fdaa70d5819e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isEnemy: 0
+  _explosionPrefab: {fileID: 459888651118894217, guid: f6928d9e32f4c994d991af42e682f7f6,
+    type: 3}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 128350476672635044}
   - component: {fileID: 2443618234658900925}
   - component: {fileID: 4766881602930428648}
+  - component: {fileID: 2216209800362770477}
   m_Layer: 0
   m_Name: Homing Missile
   m_TagString: Missile
@@ -122,3 +123,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5d97a8eecba9249b96e8a8be0b2fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+--- !u!95 &2216209800362770477
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6952483669123971947}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d144bfedab3c0f849a9cf1515845b10d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
