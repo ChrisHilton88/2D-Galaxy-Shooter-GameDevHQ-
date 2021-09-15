@@ -54,6 +54,10 @@ public class Player : MonoBehaviour
 
     CameraShake _cameraShake;
 
+    WaitForSeconds _powerupRoutineThreeSeconds = new WaitForSeconds(3.0f);
+    WaitForSeconds _powerupRoutineFourSeconds = new WaitForSeconds(4.0f);
+    WaitForSeconds _powerupRoutineFiveSeconds = new WaitForSeconds(5.0f);
+
     [SerializeField] AudioClip _laserShotClip;
     [SerializeField] AudioClip _emptyAmmoClip;
 
@@ -394,20 +398,20 @@ public class Player : MonoBehaviour
 
     IEnumerator TripleShotPowerupRoutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return _powerupRoutineFiveSeconds;
         _isTripleShotEnabled = false;
     }
 
     IEnumerator SpeedBoostPowerupRoutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return _powerupRoutineFiveSeconds;
         _speed /= _speedMultiplier;
         _isSpeedBoostEnabled = false;
     }
 
     IEnumerator MegaLaserPowerupRoutine()
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return _powerupRoutineThreeSeconds;
         _isMegaLaserEnabled = false;
     }
 
@@ -417,7 +421,7 @@ public class Player : MonoBehaviour
         _thrusterEngineCoroutinePlaying = true;
         _thrusterEngine.gameObject.SetActive(true);
         _thrusterEngine.PlaySmokeAnimation();
-        yield return new WaitForSeconds(3.0f);
+        yield return _powerupRoutineThreeSeconds;
         _thrustRend.enabled = true;
         _thrusterEngineCoroutinePlaying = false;
         _thrusterEngine.gameObject.SetActive(false);
@@ -428,7 +432,7 @@ public class Player : MonoBehaviour
         _speed = _noSpeed;
         _playerRend.color = _NegativePowerup;
         _uiManager.EngineAndLasersDisabled();
-        yield return new WaitForSeconds(4f);
+        yield return _powerupRoutineFourSeconds;
         _speed = _minSpeed;
         _playerRend.color = _thrusterBoostColor;
         _uiManager.EngineAndLasersEnabled();
