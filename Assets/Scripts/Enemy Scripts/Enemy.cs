@@ -12,7 +12,10 @@ public class Enemy : MonoBehaviour
     private float _ramRayDistance = 4f;
 
     private bool _powerupShotTrigger;
-    [SerializeField] private bool _ramPlayerCoroutine;
+    private bool _playerShotTrigger;
+    private bool _enemyShootUp;
+    private bool _ramPlayerCoroutine;
+    private bool _isCoroutinePlaying;
 
     [SerializeField] private GameObject _enemyLaser;
 
@@ -25,8 +28,11 @@ public class Enemy : MonoBehaviour
     AudioSource _audioSource;
 
     WaitForSeconds _ramTime = new WaitForSeconds(0.5f);
+    WaitForSeconds _cooldownTimer = new WaitForSeconds(5.0f);
 
-    Vector3 _rayOffset = new Vector3(0, -0.6f, 0);
+    Vector3 _downRayOffset = new Vector3(0, -0.6f, 0);
+    Vector3 _upRayOffset = new Vector3(0f, 0.5f, 0f);
+    Vector3 _enemyShootUpOffset = new Vector3(0f, 0.5f, 0f);
 
 
     void Start()
@@ -60,20 +66,37 @@ public class Enemy : MonoBehaviour
         EnemyFire();
         RayCastPowerupShoot();
         RayCastRamPlayer();
+        RayCastPlayerAboveShoot();
     }
 
     void RayCastPowerupShoot()
     {
-        Debug.DrawRay(transform.position + _rayOffset, (-transform.up * _rayPowerupDistance), Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + _rayOffset, -transform.up, _rayPowerupDistance);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + _downRayOffset, -transform.up, _rayPowerupDistance);
         if (hit)
         {
             if (hit.collider.tag == "Powerup")
             {
-                if (_powerupShotTrigger == false)
+                if (_powerupShotTrigger == false && _isCoroutinePlaying == false)
                 {
                     LaserFire();
-                    StartCoroutine(CooldownRoutine(5.0f, _powerupShotTrigger, "Started Powerup Shot Cooldown", "Finished Powerup Shot Cooldown"));
+                    StartCoroutine(CooldownRoutine(_powerupShotTrigger));
+                }
+            }
+        }
+    }
+
+    void RayCastPlayerAboveShoot()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + _upRayOffset, transform.up, _rayPowerupDistance);
+        if (hit)
+        {
+            if (hit.collider.tag == "Player")
+            {
+                if (_playerShotTrigger == false && _isCoroutinePlaying == false)
+                {
+                    _enemyShootUp = true;
+                    LaserFire();
+                    StartCoroutine(CooldownRoutine(_playerShotTrigger));
                 }
             }
         }
@@ -81,16 +104,15 @@ public class Enemy : MonoBehaviour
 
     void RayCastRamPlayer()
     {
-        Debug.DrawRay(transform.position + _rayOffset, (-transform.up * _ramRayDistance), Color.yellow);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + _rayOffset, -transform.up, _ramRayDistance);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + _downRayOffset, -transform.up, _ramRayDistance);
         if (hit)
         {
             if(hit.collider.tag == "Player")
             {
-                if(_ramPlayerCoroutine == false)
+                if(_ramPlayerCoroutine == false && _isCoroutinePlaying == false)
                 {
                     StartCoroutine(EnemyRam());
-                    StartCoroutine(CooldownRoutine(5f, _ramPlayerCoroutine, "Started Ram Cooldown", "Finished Ram Cooldown"));
+                    StartCoroutine(CooldownRoutine(_ramPlayerCoroutine));
                 }
             }
         }
@@ -116,13 +138,37 @@ public class Enemy : MonoBehaviour
 
     void LaserFire()
     {
+        if(_enemyShootUp == true)
+        {
+            LasersUp();
+        }
+        else
+        {
+            LasersDown();
+        }
+    }
+
+    void LasersDown()
+    {
         GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
         Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
 
         for (int i = 0; i < lasers.Length; i++)
         {
-            lasers[i].AssignEnemyLaser();
+            lasers[i].AssignEnemyLaser(true);
         }
+    }
+
+    void LasersUp()
+    {
+        GameObject enemyLaser = Instantiate(_enemyLaser, transform.position + _enemyShootUpOffset, Quaternion.identity);
+        Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+
+        for (int i = 0; i < lasers.Length; i++)
+        {
+            lasers[i].AssignEnemyLaser(false);
+        }
+        _enemyShootUp = false;
     }
 
     void CalculateMovement()
@@ -183,10 +229,12 @@ public class Enemy : MonoBehaviour
         _enemySpeed = _minEnemySpeed;
     }
 
-    IEnumerator CooldownRoutine(float time, bool trigger, string firstMessage, string secondMessage)
+    IEnumerator CooldownRoutine(bool trigger)
     {
+        _isCoroutinePlaying = true;
         trigger = true;
-        yield return new WaitForSeconds(time);
+        yield return _cooldownTimer;
+        _isCoroutinePlaying = false;
         trigger = false;
     }
 

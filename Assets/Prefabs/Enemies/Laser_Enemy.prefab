@@ -261,3 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 730c5c604b46a294f8cd78e30df99c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _frequency: 3
+  _magnitude: 1
+  _enemyMegaLaserPrefab: {fileID: 4907354113291092723, guid: 21bbc394b7e571b4899fc3a6f6f70f73,
+    type: 3}

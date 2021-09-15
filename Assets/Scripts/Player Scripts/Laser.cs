@@ -81,9 +81,9 @@ public class Laser : MonoBehaviour
         }
     }
 
-    public void AssignEnemyLaser()
+    public void AssignEnemyLaser(bool isEnemy)
     {
-        _isEnemy = true;
+        _isEnemy = isEnemy;
     }
 }
 
