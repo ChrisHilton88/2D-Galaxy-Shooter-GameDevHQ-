@@ -6891,10 +6891,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Teleport_Enemy
       objectReference: {fileID: 0}
-    - target: {fileID: 7848050742286944465, guid: daa28f43b7439e9478bd1c3a5a4affc4,
+    - target: {fileID: 8707715791034834405, guid: daa28f43b7439e9478bd1c3a5a4affc4,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707715791034834405, guid: daa28f43b7439e9478bd1c3a5a4affc4,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707715791034834405, guid: daa28f43b7439e9478bd1c3a5a4affc4,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707715791034834405, guid: daa28f43b7439e9478bd1c3a5a4affc4,
         type: 3}
       propertyPath: m_SortingOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daa28f43b7439e9478bd1c3a5a4affc4, type: 3}
