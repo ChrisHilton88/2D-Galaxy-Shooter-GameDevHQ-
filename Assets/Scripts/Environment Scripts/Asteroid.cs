@@ -6,16 +6,24 @@ public class Asteroid : MonoBehaviour
 
     SpawnManager _spawnManager;
 
+    UIManager _uiManager;
+
     [SerializeField] private GameObject _explosionPrefab;
 
 
     void Start()
     {
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if(_spawnManager == null)
         {
-            Debug.LogError("SpawnManager is Null : Asteroid");
+            Debug.LogError("SpawnManager is NULL in Asteroid");
+        }
+
+        if(_uiManager == null)
+        {
+            Debug.Log("UIManager is NULL in Asteroid");
         }
     }
 
@@ -31,7 +39,9 @@ public class Asteroid : MonoBehaviour
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(other.gameObject);
             _spawnManager.StartSpawning();
-            Destroy(this.gameObject);
+            Destroy(gameObject, 2.633f);
+            Destroy(GetComponent<SpriteRenderer>());
+            Destroy(GetComponent<Asteroid>());
         }
     }
 }

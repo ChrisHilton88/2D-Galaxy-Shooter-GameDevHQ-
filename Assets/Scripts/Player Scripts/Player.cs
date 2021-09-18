@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private float _speed = 7.5f;
-    private float _speedMultiplier = 1.5f;
+    [SerializeField] private float _speed = 7.5f;
+    private float _speedMultiplier = 2f;
     private float _minSpeed = 7.5f;
-    private float _maxSpeed = 20f;
+    private float _maxSpeed = 15f;
     private float _noSpeed = 0f;
 
     private float _canFire = 0;
@@ -30,8 +30,9 @@ public class Player : MonoBehaviour
 
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
 
-    private Vector3 _laserOffset = new Vector3(0, 0.5f, 0);
-    private Vector3 _megaLaserOffset = new Vector3(0, 5.25f, 0);
+    private Vector3 _laserOffset = new Vector3(0f, 0.5f, 0f);
+    private Vector3 _megaLaserOffset = new Vector3(0f, 5.25f, 0f);
+    private Vector3 _tripleShotOffset = new Vector3(0f, 0.6f, 0f);
 
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
@@ -45,6 +46,8 @@ public class Player : MonoBehaviour
     UIManager _uiManager;
 
     ThrusterEngine _thrusterEngine;
+
+    ThrusterController _thrustCont;
 
     AudioSource _audioSource;
 
@@ -76,46 +79,52 @@ public class Player : MonoBehaviour
         _shieldSpriteRend = transform.Find("Shield").GetComponentInChildren<SpriteRenderer>();
         _thrustRend = GameObject.Find("Thruster").GetComponentInChildren<SpriteRenderer>();
         _thrusterEngine = transform.Find("Thruster Engine").GetComponentInChildren<ThrusterEngine>();
+        _thrustCont = GameObject.Find("Thruster").GetComponent<ThrusterController>();
         _cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
 
         if (_spawnManager == null)
         {
-            Debug.LogError("SpawnManager not found in Player");
+            Debug.LogError("SpawnManager is NULL in Player script");
         }
 
         if (_uiManager == null)
         {
-            Debug.LogError("UIManager not found in Canvas game object");
+            Debug.LogError("UIManager is NULL in Player Script");
         }
 
         if(_audioSource == null)
         {
-            Debug.LogError("Audio clip is null");
+            Debug.LogError("AudioClip is NULL in Player script");
         }
 
         if(_playerRend == null)
         {
-            Debug.Log("SpriteRenderer not found on the player");
+            Debug.Log("SpriteRenderer is NULL in Player script");
         }
 
         if(_shieldSpriteRend == null)
         {
-            Debug.Log("Shield is null");
+            Debug.Log("Shield is NULL in Player script");
         }
 
         if(_thrustRend == null)
         {
-            Debug.Log("Thruster is null");
+            Debug.Log("Thruster is NULL in Player script");
         }
 
         if(_thrusterEngine == null)
         {
-            Debug.Log("thruster engine is null");
+            Debug.Log("ThrusterEngine is NULL in Player script");
+        }
+
+        if(_thrustCont == null)
+        {
+            Debug.Log("ThrusterController is NULL in Player script");
         }
 
         if(_cameraShake == null)
         {
-            Debug.Log("Camera Shake is null in Player script");
+            Debug.Log("CameraShake is NULL in Player script");
         }
 
         _playerShield.SetActive(false);
@@ -160,7 +169,14 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         direction.Normalize();
 
-        transform.Translate(direction * _speed * Time.deltaTime);
+        if (_isSpeedBoostEnabled)
+        {
+            transform.Translate(direction * _maxSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);
+        }
 
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -_xBoundary, _xBoundary), Mathf.Clamp(transform.position.y, -_yBoundary, _yBoundary), 0);
     }
@@ -171,7 +187,7 @@ public class Player : MonoBehaviour
 
         if (_isTripleShotEnabled == true)
         {
-            Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            Instantiate(_tripleShotPrefab, transform.position + _tripleShotOffset, Quaternion.identity);
             _ammoCount -= _ammoShot;
             CheckAmmoCount();
         }
@@ -261,27 +277,33 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         _isSpeedBoostEnabled = true;
-
-        // Need to fix up the speed multiplier
-        if (_speed >= _maxSpeed)
-        {
-            _speed = _maxSpeed;
-        }
-
-        _speed *= _speedMultiplier;
         StartCoroutine(SpeedBoostPowerupRoutine());
     }
 
     public void ThrusterBoostActivated()
     {
-        _speed = _maxSpeed;
+        _speed *= _speedMultiplier;
         _thrustRend.color = _thrusterBoostColor;
+
+        if(_speed >= _maxSpeed)
+        {
+            _speed = _maxSpeed;
+        }
     }
 
     public void ThrusterBoostDeactivated()
     {
-        _speed = _minSpeed;
-        _thrustRend.color = _mainEngine;
+        if(_isNegativePickupEnabled == true)
+        {
+            _speed = _noSpeed;
+            _thrustRend.color = _NegativePowerup;
+            _playerRend.color = _NegativePowerup;
+        }
+        else
+        {
+            _speed = _minSpeed;
+            _thrustRend.color = _mainEngine;
+        }
     }
 
     public void ThrusterOverload()
@@ -327,6 +349,7 @@ public class Player : MonoBehaviour
     {
         _isNegativePickupEnabled = true;
         StartCoroutine(NegativePickupRoutine());
+        StartCoroutine(_thrustCont.NegativePickupRoutine());
     }
 
     void ShieldBoostDeactivated()
@@ -405,7 +428,6 @@ public class Player : MonoBehaviour
     IEnumerator SpeedBoostPowerupRoutine()
     {
         yield return _powerupRoutineFiveSeconds;
-        _speed /= _speedMultiplier;
         _isSpeedBoostEnabled = false;
     }
 
@@ -429,12 +451,10 @@ public class Player : MonoBehaviour
 
     IEnumerator NegativePickupRoutine()
     {
-        _speed = _noSpeed;
         _playerRend.color = _NegativePowerup;
         _uiManager.EngineAndLasersDisabled();
         yield return _powerupRoutineFourSeconds;
-        _speed = _minSpeed;
-        _playerRend.color = _thrusterBoostColor;
+        _playerRend.color = _mainEngine;
         _uiManager.EngineAndLasersEnabled();
         _isNegativePickupEnabled = false;
     }

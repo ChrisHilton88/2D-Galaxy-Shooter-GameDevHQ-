@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    private bool _coroutinePlaying = false;
+
+    [SerializeField] private Text _enemiesRemaining;
     [SerializeField] private Text _scoreText;
     [SerializeField] private Text _ammoDisplay;
     [SerializeField] private Text _outOfAmmo;
@@ -15,11 +18,13 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Text _gameOver;
     [SerializeField] private Text _restartGame;
-
-    private bool _coroutinePlaying = false;
+    [SerializeField] private Text _wave;
 
     GameManager _gameManager;
     Player _player;
+
+    WaitForSeconds _waveTextTimer = new WaitForSeconds(2f);
+
 
     void Start()
     {
@@ -73,6 +78,11 @@ public class UIManager : MonoBehaviour
         _restartGame.gameObject.SetActive(true);
     }
 
+    public void UpdateEnemiesRemaining(int currentEnemies)
+    {
+        _enemiesRemaining.text = currentEnemies.ToString();
+    }
+
     public void UpdateAmmoDisplay(int currentAmmo, int maxAmmo)
     {
         _ammoDisplay.text =  currentAmmo + "/" + maxAmmo;
@@ -103,8 +113,16 @@ public class UIManager : MonoBehaviour
     {
         _coroutinePlaying = true;
         _outOfAmmo.gameObject.SetActive(true);
-        yield return new WaitForSeconds(0.50f);
+        yield return new WaitForSeconds(0.5f);
         _outOfAmmo.gameObject.SetActive(false);
         _coroutinePlaying = false;
+    }
+
+    public IEnumerator WaveText(int _waveNumber)
+    {
+        _wave.gameObject.SetActive(true);
+        _wave.text = "Wave " + _waveNumber;
+        yield return _waveTextTimer;
+        _wave.gameObject.SetActive(false);
     }
 }

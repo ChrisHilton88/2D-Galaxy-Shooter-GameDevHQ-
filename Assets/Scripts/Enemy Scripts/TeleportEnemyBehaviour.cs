@@ -1,20 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TeleportEnemyBehaviour : MonoBehaviour
 {
     private float _enemySpeed = 5;
     private float _avoidShotDistance = 3f;
-    private float _shieldHits = 2;
+    private float _shieldHits = 1;
 
     private bool _isShieldEnabled;
     private bool _isAvoidShotCoroutineEnabled;
 
     Vector3 _endPos;
     Vector3 _rayOffset = new Vector3(0, -0.6f, 0);
-
-    Color _halfShieldColor = new Color(1f, 0f, 0f, 0.60f);
 
     AudioSource _audioSource;
 
@@ -24,18 +21,20 @@ public class TeleportEnemyBehaviour : MonoBehaviour
 
     SpriteRenderer _shieldSpriteRend;
 
+    SpawnManager _spawnManager;
+
     WaitForSeconds _cooldown = new WaitForSeconds(3.0f);
 
     [SerializeField] private GameObject _enemyShield;
 
 
-    // In SpawnManager, when this enemy is instantiated, create a random event that will determine whether the enemy shield will be activated
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
         _anim = GetComponent<Animator>();
         _player = GameObject.Find("Player").GetComponent<Player>();
         _shieldSpriteRend = transform.Find("Enemy_Shield").GetComponentInChildren<SpriteRenderer>();
+        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
 
         if (_audioSource == null)
         {
@@ -57,9 +56,13 @@ public class TeleportEnemyBehaviour : MonoBehaviour
             Debug.Log("Shield is null in Teleport Enemy");
         }
 
+        if (_spawnManager == null)
+        {
+            Debug.Log("SpawnManager is NULL in LaserEnemyBehaviour");
+        }
+
         _isShieldEnabled = true;
         _enemyShield.SetActive(true);
-        transform.position = new Vector3(Random.Range(-8f, 8f), 6f, 0f);
         _endPos = new Vector3(Random.Range(-8f, 8f), -7f, 0f);
     }
 
@@ -108,7 +111,6 @@ public class TeleportEnemyBehaviour : MonoBehaviour
         if(_isShieldEnabled == true)
         {
             _shieldHits--;
-            _shieldSpriteRend.color = _halfShieldColor;
             _audioSource.Play();
 
             if(_shieldHits <= 0)
@@ -140,14 +142,15 @@ public class TeleportEnemyBehaviour : MonoBehaviour
 
         if (other.tag == "MegaLaser")
         {
-            CollisionExplosion();
             _player.AddPoints(Random.Range(10, 21));
+            CollisionExplosion();
+            Destroy(GetComponentInChildren<SpriteRenderer>());
         }
 
         if (other.tag == "Missile")
         {
-            CollisionExplosion();
             _player.AddPoints(Random.Range(10, 21));
+            CollisionExplosion();
             Destroy(other.gameObject);
         }
     }

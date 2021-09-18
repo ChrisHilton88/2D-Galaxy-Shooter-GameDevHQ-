@@ -16,10 +16,9 @@ public class Enemy : MonoBehaviour
     private bool _enemyShootUp;
     private bool _ramPlayerCoroutine;
     private bool _isCoroutinePlaying;
+    //[SerializeField] private bool isAlive;
 
     [SerializeField] private GameObject _enemyLaser;
-
-    //[SerializeField] private bool isAlive;
 
     Player _player;
 
@@ -27,12 +26,15 @@ public class Enemy : MonoBehaviour
 
     AudioSource _audioSource;
 
+    SpawnManager _spawnManager;
+
     WaitForSeconds _ramTime = new WaitForSeconds(0.5f);
     WaitForSeconds _cooldownTimer = new WaitForSeconds(5.0f);
 
+    Vector3 _downLaserOffset = new Vector3(0f, -0.25f, 0f);
     Vector3 _downRayOffset = new Vector3(0, -0.6f, 0);
     Vector3 _upRayOffset = new Vector3(0f, 0.5f, 0f);
-    Vector3 _enemyShootUpOffset = new Vector3(0f, 0.5f, 0f);
+    Vector3 _enemyShootUpOffset = new Vector3(0f, 1.50f, 0f);
 
 
     void Start()
@@ -40,6 +42,7 @@ public class Enemy : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         _audioSource = GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
+        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
 
         if (_player == null)
         {
@@ -54,6 +57,11 @@ public class Enemy : MonoBehaviour
         if(_animator == null)
         {
             Debug.LogError("Animator not found on Enemy script");
+        }
+
+        if(_spawnManager == null)
+        {
+            Debug.Log("SpawnManager not found in Enemy script");
         }
 
         //isAlive = true;
@@ -150,7 +158,7 @@ public class Enemy : MonoBehaviour
 
     void LasersDown()
     {
-        GameObject enemyLaser = Instantiate(_enemyLaser, transform.position, Quaternion.identity);
+        GameObject enemyLaser = Instantiate(_enemyLaser, transform.position + _downLaserOffset, Quaternion.identity);
         Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
 
         for (int i = 0; i < lasers.Length; i++)
@@ -175,10 +183,10 @@ public class Enemy : MonoBehaviour
     {
         transform.Translate(Vector3.down * _enemySpeed * Time.deltaTime);
 
-        if (transform.position.y < -5)
+        if (transform.position.y < -5f)
         {
             float randomX = Random.Range(-8f, 8f);
-            transform.position = new Vector3(randomX, 6, 0);
+            transform.position = new Vector3(randomX, 6f, 0f);
         }
     }
 

@@ -15,16 +15,47 @@ public class LaserEnemyBehaviour : MonoBehaviour
     Vector3 _spawn;
     Vector3 _enemyMegaLaserOffset = new Vector3(0f, -5f, 0f);
 
+    Player _player;
+
+    AudioSource _audioSource;
+
+    Animator _anim;
+
+    SpawnManager _spawnManager;
+
     [SerializeField] private GameObject _enemyMegaLaserPrefab;
 
 
     void Start()
     {
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        _audioSource = GetComponent<AudioSource>();
+        _anim = GetComponent<Animator>();
+        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+
+        if(_player == null)
+        {
+            Debug.Log("Player is NULL in LaserEnemyBehaviour");
+        }
+
+        if(_audioSource == null)
+        {
+            Debug.Log("AudioSource is NULL in LaserEnemyBehaviour");
+        }
+
+        if(_anim == null)
+        {
+            Debug.Log("Animator is NULL in LaserEnemyBehaviour");
+        }
+
+        if(_spawnManager == null)
+        {
+            Debug.Log("SpawnManager is NULL in LaserEnemyBehaviour");
+        }
+
         pos = transform.position;
-
         _spawn = new Vector3(-9.5f, Random.Range(0f, 4f), 0f);
-
-        transform.position = _spawn;
+        _canFire = Time.time + 2f;
     }
 
     void Update()
@@ -64,5 +95,44 @@ public class LaserEnemyBehaviour : MonoBehaviour
     void Respawn()
     {
         pos = _spawn;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Laser")
+        {
+            _player.AddPoints(Random.Range(10, 21));
+            Destroy(other.gameObject);
+            CollisionExplosion();
+        }
+
+        if (other.tag == "Player")
+        {
+            _player.Damage();
+            CollisionExplosion();
+        }
+
+        if (other.tag == "MegaLaser")
+        {
+            CollisionExplosion();
+            _player.AddPoints(Random.Range(10, 21));
+        }
+
+        if (other.tag == "Missile")
+        {
+            CollisionExplosion();
+            _player.AddPoints(Random.Range(10, 21));
+            Destroy(other.gameObject);
+        }
+    }
+
+    void CollisionExplosion()
+    {
+        _audioSource.Play();
+        _enemySpeed = 0.25f;
+        _anim.SetBool("OnEnemyDeath", true);
+        Destroy(gameObject, 2.633f);
+        Destroy(GetComponent<Collider2D>());
+        Destroy(GetComponent<LaserEnemyBehaviour>());
     }
 }

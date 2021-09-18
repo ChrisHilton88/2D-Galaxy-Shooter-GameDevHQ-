@@ -28,12 +28,12 @@ public class Powerups : MonoBehaviour
 
         if(player == null)
         {
-            Debug.LogError("Player script not found in Powerups script");
+            Debug.LogError("Player script is NULL in Powerups");
         }
 
         if(thrustCont == null)
         {
-            Debug.LogError("ThrusterController script not found within the Powerups script");
+            Debug.LogError("ThrusterController script is NULL within Powerups");
         }
     }
 
@@ -88,7 +88,6 @@ public class Powerups : MonoBehaviour
                     break;
                 case 6:
                     player.NegativePickup();
-                    StartCoroutine(thrustCont.NegativePickupRoutine());
                     Destroy(gameObject);
                     break;
                 default:
@@ -97,16 +96,16 @@ public class Powerups : MonoBehaviour
             }
         }
 
-        if(other.tag == "Enemy")
-        {
-            Instantiate(_powerupExplosionPrefab, transform.position, Quaternion.identity);
-            Destroy(gameObject);
-        }
-
         if (other.tag == "Laser")
         {
             Instantiate(_powerupExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+
+        if (other.tag == "EnemyMegaLaser")
+        {
+            Instantiate(_powerupExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }
@@ -120,7 +119,7 @@ public class Powerups : MonoBehaviour
      {
         playerPos = player.transform.position;
         Vector3 direction = transform.position - playerPos;
-        direction = direction.normalized;
+        direction = -direction.normalized;
         transform.position += direction * _magnetSpeed * Time.deltaTime;
      }
 }

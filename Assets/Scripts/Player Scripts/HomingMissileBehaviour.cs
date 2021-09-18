@@ -10,7 +10,7 @@ public class HomingMissileBehaviour : MonoBehaviour
 
     Vector3 _playClipAtPoint = new Vector3(0, 0, 0);
 
-    Enemy _closestEnemy;
+    GameObject _closestEnemy;
 
     Animator _anim;
 
@@ -41,13 +41,13 @@ public class HomingMissileBehaviour : MonoBehaviour
     public void FindClosestEnemy()
     {
         float _closestDistanceToEnemy = Mathf.Infinity;
-        Enemy[] _enemyList = FindObjectsOfType<Enemy>();
+        GameObject[] _enemyList = GameObject.FindGameObjectsWithTag("Enemy");
 
         if (_enemyList != null)
         {
             _enemyTargetFound = true;
 
-            foreach (Enemy enemy in _enemyList)
+            foreach (GameObject enemy in _enemyList)
             {
                 float _distanceToEnemy = (enemy.transform.position - transform.position).sqrMagnitude;
 
