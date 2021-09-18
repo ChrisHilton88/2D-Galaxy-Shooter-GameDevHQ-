@@ -27,6 +27,8 @@ public class SpawnManager : MonoBehaviour
 
     UIManager _uiManager;
 
+    Coroutine _co;
+
     // Asteroid gets destroyed and calls the method to increase the current wave from 0 to 1
     // Then we call the NextWave() method and it runs through a switch statement of currentwave numbers to create a spawning coroutine
 
@@ -62,18 +64,17 @@ public class SpawnManager : MonoBehaviour
     IEnumerator SpawningEnemiesRoutine(int _remainingEnemiesToSpawn)
     {
         _remainingEnemies = _remainingEnemiesToSpawn;
-        StartCoroutine(SpawnCommonPowerupsRoutine());
-        yield return new WaitForSeconds(2.0f);
+        _co = StartCoroutine(SpawnCommonPowerupsRoutine());
 
         while (!_stopSpawning)
         {
             yield return _enemySpawnTimer;
             SpawnRoutine();
-            Debug.Log("Spawning Wave " + _currentWave);
 
             if (_remainingEnemies < 1)
             {
                 _remainingEnemies = 0;
+                StopCoroutine(_co);
                 _currentWave++;
                 NextWave();
                 yield break;
@@ -83,10 +84,11 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnCommonPowerupsRoutine()
     {
+        yield return new WaitForSeconds(2.0f);
+
         while (!_stopSpawning)
         {
             WaitForSeconds _commonPowerupTimer = new WaitForSeconds(Random.Range(3f, 7f));
-            Debug.Log(_commonPowerupTimer);
             Vector3 powerupSpawnPos = new Vector3(Random.Range(-8f, 8f), 6f, 0);
             int randomPowerup = Random.Range(0, 7);
             GameObject powerup = Instantiate(powerups[randomPowerup], powerupSpawnPos, Quaternion.identity);
@@ -139,12 +141,15 @@ public class SpawnManager : MonoBehaviour
                 StartCoroutine(SpawningEnemiesRoutine(7));
                 break;
             case 3:
+                StartCoroutine(_uiManager.WaveText(_currentWave));
                 StartCoroutine(SpawningEnemiesRoutine(10));
                 break;
             case 4:
+                StartCoroutine(_uiManager.WaveText(_currentWave));
                 StartCoroutine(SpawningEnemiesRoutine(15));
                 break;
             case 5:
+                StartCoroutine(_uiManager.WaveText(_currentWave));
                 StartCoroutine(SpawningEnemiesRoutine(20));
                 break;
             default:
@@ -157,5 +162,4 @@ public class SpawnManager : MonoBehaviour
     {
         _stopSpawning = true;
     }
-
 }

@@ -169,7 +169,7 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         direction.Normalize();
 
-        if (_isSpeedBoostEnabled)
+        if (_isSpeedBoostEnabled && _isNegativePickupEnabled == false)
         {
             transform.Translate(direction * _maxSpeed * Time.deltaTime);
         }
@@ -334,8 +334,23 @@ public class Player : MonoBehaviour
 
     public void HealthRefillActive()
     {
-        if(_playerLives < 3)
+        if (_playerLives < 3)
         {
+            switch (_playerLives)
+            {
+                case 1:
+                    _leftEngineThruster.SetActive(false);
+                    break;
+                case 2:
+                    _rightEngineThruster.SetActive(false);
+                    break;
+                case 3:
+                    break;
+                default:
+                    Debug.Log("Invalid player life");
+                    break;
+            }
+
             _playerLives++;
             _uiManager.UpdateLivesDisplay(_playerLives);
         }
