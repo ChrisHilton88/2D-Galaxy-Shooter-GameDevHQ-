@@ -3,44 +3,28 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] private int _remainingEnemies;
-    [SerializeField] private int _currentWave;
-
-    private float _randomX;
-    private float _randomY;
+    private int _remainingEnemies;
+    private int _currentWave;
 
     private bool _stopSpawning;
-
-    Vector3 _normalEnemySpawn;
-    Vector3 _laserEnemySpawn;
-    Vector3 _teleportEnemySpawn;
 
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject enemyContainer;
 
     [SerializeField] private GameObject[] _enemies;
-    [SerializeField] private GameObject[] powerups;
+    [SerializeField] private GameObject[] _commonPowerups;
+    [SerializeField] private GameObject[] _rarePowerups;
 
     WaitForSeconds _enemySpawnTimer = new WaitForSeconds(5.0f);
-
-    GameManager _gameManager;
 
     UIManager _uiManager;
 
     Coroutine _co;
 
-    // Asteroid gets destroyed and calls the method to increase the current wave from 0 to 1
-    // Then we call the NextWave() method and it runs through a switch statement of currentwave numbers to create a spawning coroutine
 
     void Start()
     {
-        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-
-        if(_gameManager == null)
-        {
-            Debug.Log("GameManager is null in SpawnManager");
-        }
 
         if(_uiManager == null)
         {
@@ -64,7 +48,7 @@ public class SpawnManager : MonoBehaviour
     IEnumerator SpawningEnemiesRoutine(int _remainingEnemiesToSpawn)
     {
         _remainingEnemies = _remainingEnemiesToSpawn;
-        _co = StartCoroutine(SpawnCommonPowerupsRoutine());
+        _co = StartCoroutine(SpawnPowerupsRoutine());
 
         while (!_stopSpawning)
         {
@@ -82,30 +66,52 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnCommonPowerupsRoutine()
+    IEnumerator SpawnPowerupsRoutine()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(3.0f);
 
         while (!_stopSpawning)
         {
-            WaitForSeconds _commonPowerupTimer = new WaitForSeconds(Random.Range(3f, 7f));
+            WaitForSeconds _powerupTimer = new WaitForSeconds(Random.Range(3f, 7f));
             Vector3 powerupSpawnPos = new Vector3(Random.Range(-8f, 8f), 6f, 0);
-            int randomPowerup = Random.Range(0, 7);
-            GameObject powerup = Instantiate(powerups[randomPowerup], powerupSpawnPos, Quaternion.identity);
-            yield return _commonPowerupTimer;
+            int randomNumber = Random.Range(0, 101);
+            Debug.LogError(randomNumber);
+
+            if (randomNumber >= 0 && randomNumber <= 30)
+            {
+                int randomRarePowerup = Random.Range(0, 3);
+                Debug.LogError(randomRarePowerup);
+                GameObject powerup = Instantiate(_rarePowerups[randomRarePowerup], powerupSpawnPos, Quaternion.identity);
+                Debug.Log(powerup.gameObject.transform.name);
+            }
+            else if(randomNumber > 30 && randomNumber <= 100)
+            {
+                int randomCommonPowerup = Random.Range(0, 4);
+                Debug.LogError(randomCommonPowerup);
+                GameObject powerup = Instantiate(_commonPowerups[randomCommonPowerup], powerupSpawnPos, Quaternion.identity);
+                Debug.Log(powerup.gameObject.transform.name);
+            }
+            else
+            {
+                Debug.Log("Not a valid number");
+            }
+
+            yield return _powerupTimer;
         }
     }
 
+
+
+
     void SpawnRoutine()
     {
-        _randomX = Random.Range(-8f, 8f);
-        _randomY = Random.Range(0f, 4f);
-
+        float _randomX = Random.Range(-8f, 8f);
+        float _randomY = Random.Range(0f, 4f);
         int _randomEnemy = Random.Range(0, 3);
 
-        _normalEnemySpawn = new Vector3(_randomX, 6f, 0f);
-        _laserEnemySpawn = new Vector3(-9.5f, _randomY, 0f);
-        _teleportEnemySpawn = new Vector3(Random.Range(-8f, 8f), 6f, 0f);
+        Vector3 _normalEnemySpawn = new Vector3(_randomX, 6f, 0f);
+        Vector3 _laserEnemySpawn = new Vector3(-9.5f, _randomY, 0f);
+        Vector3 _teleportEnemySpawn = new Vector3(_randomX, 6f, 0f);
 
         switch (_randomEnemy)
         {

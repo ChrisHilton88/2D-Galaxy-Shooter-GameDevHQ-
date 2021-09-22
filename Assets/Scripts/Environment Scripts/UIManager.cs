@@ -25,7 +25,6 @@ public class UIManager : MonoBehaviour
 
     WaitForSeconds _waveTextTimer = new WaitForSeconds(2f);
 
-
     void Start()
     {
         _scoreText.text = "Score: " + 0;
