@@ -125,10 +125,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2954483264296591264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b776faac54b1dc478fb64515a757522, type: 3}
+  m_Script: {fileID: 11500000, guid: a8b31dacb9ffa3042b4fdaa70d5819e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserSpeed: 5
+  _isEnemy: 0
+  _explosionPrefab: {fileID: 459888651118894217, guid: f6928d9e32f4c994d991af42e682f7f6,
+    type: 3}
 --- !u!61 &4471497082531008853
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -165,8 +167,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9136869821580195396}
   - component: {fileID: 5046361350465653087}
-  - component: {fileID: 5613345580088125438}
   - component: {fileID: 8219729905331091744}
+  - component: {fileID: 1033946811873429283}
   m_Layer: 0
   m_Name: Laser (2)
   m_TagString: Laser
@@ -238,19 +240,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5613345580088125438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4512135714599070588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b776faac54b1dc478fb64515a757522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  laserSpeed: 5
 --- !u!61 &8219729905331091744
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -277,6 +266,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.733996, y: 9.345755}
   m_EdgeRadius: 0
+--- !u!114 &1033946811873429283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4512135714599070588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8b31dacb9ffa3042b4fdaa70d5819e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isEnemy: 0
+  _explosionPrefab: {fileID: 459888651118894217, guid: f6928d9e32f4c994d991af42e682f7f6,
+    type: 3}
 --- !u!1 &7101959867332412950
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,10 +373,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7101959867332412950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b776faac54b1dc478fb64515a757522, type: 3}
+  m_Script: {fileID: 11500000, guid: a8b31dacb9ffa3042b4fdaa70d5819e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserSpeed: 5
+  _isEnemy: 0
+  _explosionPrefab: {fileID: 459888651118894217, guid: f6928d9e32f4c994d991af42e682f7f6,
+    type: 3}
 --- !u!61 &1415471775944049143
 BoxCollider2D:
   m_ObjectHideFlags: 0

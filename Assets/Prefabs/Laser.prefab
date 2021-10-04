@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5510867147993171262}
   - component: {fileID: -7648631286389833303}
   - component: {fileID: -6609100525529625861}
+  - component: {fileID: 5950013779056406069}
   m_Layer: 0
   m_Name: Laser
   m_TagString: Laser
@@ -71,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -198821601
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: b030d335857201646be69703e678d6e5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -92,11 +93,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1636378947955088002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b776faac54b1dc478fb64515a757522, type: 3}
+  m_Script: {fileID: 11500000, guid: a8b31dacb9ffa3042b4fdaa70d5819e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserSpeed: 5
-  isEnemy: 0
+  _isEnemy: 0
+  _explosionPrefab: {fileID: 459888651118894217, guid: f6928d9e32f4c994d991af42e682f7f6,
+    type: 3}
 --- !u!61 &-6609100525529625861
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -107,7 +109,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.047678173, y: 0.10617757}
@@ -123,3 +125,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.733996, y: 9.345755}
   m_EdgeRadius: 0
+--- !u!50 &5950013779056406069
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636378947955088002}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
