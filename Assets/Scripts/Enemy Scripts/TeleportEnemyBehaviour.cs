@@ -13,19 +13,17 @@ public class TeleportEnemyBehaviour : MonoBehaviour
     Vector3 _endPos;
     Vector3 _rayOffset = new Vector3(0, -0.6f, 0);
 
-    AudioSource _audioSource;
+    [SerializeField] private GameObject _enemyShield;
 
     Animator _anim;
 
-    Player _player;
+    AudioSource _audioSource;
 
-    SpriteRenderer _shieldSpriteRend;
+    Player _player;
 
     SpawnManager _spawnManager;
 
     WaitForSeconds _cooldown = new WaitForSeconds(3.0f);
-
-    [SerializeField] private GameObject _enemyShield;
 
 
     void Start()
@@ -33,32 +31,26 @@ public class TeleportEnemyBehaviour : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _anim = GetComponent<Animator>();
         _player = GameObject.Find("Player").GetComponent<Player>();
-        _shieldSpriteRend = transform.Find("Enemy_Shield").GetComponentInChildren<SpriteRenderer>();
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
 
         if (_audioSource == null)
         {
-            Debug.Log("Audio Source is NULL in Teleport Enemy");
+            Debug.LogError("AudioSource is NULL in TeleportEnemyBehaviour");
         }
 
         if (_anim == null)
         {
-            Debug.Log("Animator is NULL in Teleport Enemy");
+            Debug.Log("Animator is NULL in TeleportEnemyBehaviour");
         }
 
         if (_player == null)
         {
-            Debug.Log("Player is NULL in Teleport Enemy");
-        }
-
-        if (_shieldSpriteRend == null)
-        {
-            Debug.Log("Shield is null in Teleport Enemy");
+            Debug.Log("Player is NULL in TeleportEnemyBehaviour");
         }
 
         if (_spawnManager == null)
         {
-            Debug.Log("SpawnManager is NULL in LaserEnemyBehaviour");
+            Debug.Log("SpawnManager is NULL in TeleportEnemyBehaviour");
         }
 
         _isShieldEnabled = true;
@@ -125,6 +117,16 @@ public class TeleportEnemyBehaviour : MonoBehaviour
         }
     }
 
+    void CollisionExplosion()
+    {
+        _audioSource.Play();
+        _enemySpeed = 0.25f;
+        _anim.SetBool("OnEnemyDeath", true);
+        Destroy(gameObject, 2.633f);
+        Destroy(GetComponent<Collider2D>());
+        Destroy(GetComponent<TeleportEnemyBehaviour>());
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Laser")
@@ -144,7 +146,7 @@ public class TeleportEnemyBehaviour : MonoBehaviour
         {
             _player.AddPoints(Random.Range(10, 21));
             CollisionExplosion();
-            Destroy(GetComponentInChildren<SpriteRenderer>());
+            _enemyShield.SetActive(false);
         }
 
         if (other.tag == "Missile")
@@ -153,16 +155,6 @@ public class TeleportEnemyBehaviour : MonoBehaviour
             CollisionExplosion();
             Destroy(other.gameObject);
         }
-    }
-
-    void CollisionExplosion()
-    {
-        _audioSource.Play();
-        _enemySpeed = 0.25f;
-        _anim.SetBool("OnEnemyDeath", true);
-        Destroy(gameObject, 2.633f);
-        Destroy(GetComponent<Collider2D>());
-        Destroy(GetComponent<Enemy>());
     }
 
     IEnumerator AvoidShotCooldownRoutine()

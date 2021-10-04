@@ -1,39 +1,37 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Powerups : MonoBehaviour
 { 
     private int _powerupSpeed = 3;
     private int _magnetSpeed = 5;
-
-    private bool _isMagnetising = false;
-
-    Vector3 playerPos;
-
-    Player player;
-
-    ThrusterController thrustCont;
-
     [SerializeField] private int _powerupID;
+
+    private bool _isMagnetising;
+
+    Vector3 _playerPos;
 
     [SerializeField] private AudioClip _clip;
 
     [SerializeField] GameObject _powerupExplosionPrefab;
 
+    Player _player;
+
+    ThrusterController _thrustCont;
+
 
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<Player>();
-        thrustCont = GameObject.Find("Thruster").GetComponent<ThrusterController>();
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        _thrustCont = GameObject.Find("Thruster").GetComponent<ThrusterController>();
 
-        if(player == null)
+        if(_player == null)
         {
-            Debug.LogError("Player script is NULL in Powerups");
+            Debug.LogError("Player is NULL in Powerups");
         }
 
-        if(thrustCont == null)
+        if(_thrustCont == null)
         {
-            Debug.LogError("ThrusterController script is NULL within Powerups");
+            Debug.LogError("ThrusterController is NULL in Powerups");
         }
     }
 
@@ -54,6 +52,14 @@ public class Powerups : MonoBehaviour
         }
     }
 
+    void PowerupMagnetMove()
+    {
+        _playerPos = _player.transform.position;
+        Vector3 direction = transform.position - _playerPos;
+        direction = -direction.normalized;
+        transform.position += direction * _magnetSpeed * Time.deltaTime;
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Player")
@@ -63,31 +69,31 @@ public class Powerups : MonoBehaviour
             switch (_powerupID)
             {
                 case 0:
-                    player.TripleShotActive();
+                    _player.TripleShotActive();
                     Destroy(gameObject);
                     break;
                 case 1:
-                    player.SpeedBoostActive();
+                    _player.SpeedBoostActive();
                     Destroy(gameObject);
                     break;
                 case 2:
-                    player.ShieldBoostActive();
+                    _player.ShieldBoostActive();
                     Destroy(gameObject);
                     break;
                 case 3:
-                    player.AmmoRefillActive();
+                    _player.AmmoRefillActive();
                     Destroy(gameObject);
                     break;
                 case 4:
-                    player.HealthRefillActive();
+                    _player.HealthRefillActive();
                     Destroy(gameObject);
                     break;
                 case 5:
-                    player.MegaLaserActive();
+                    _player.MegaLaserActive();
                     Destroy(gameObject);
                     break;
                 case 6:
-                    player.NegativePickup();
+                    _player.NegativePickup();
                     Destroy(gameObject);
                     break;
                 default:
@@ -114,12 +120,4 @@ public class Powerups : MonoBehaviour
     {
         _isMagnetising = true;
     }
-
-    void PowerupMagnetMove()
-     {
-        playerPos = player.transform.position;
-        Vector3 direction = transform.position - playerPos;
-        direction = -direction.normalized;
-        transform.position += direction * _magnetSpeed * Time.deltaTime;
-     }
 }

@@ -3,15 +3,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _speed = 7.5f;
-    private float _speedMultiplier = 2f;
-    private float _minSpeed = 7.5f;
-    private float _maxSpeed = 15f;
-    private float _noSpeed = 0f;
-
-    private float _canFire = 0;
-    private float _fireRate = 0.25f;
-
     private int _playerLives = 3;
     private int _score;
     private int _shieldHits;
@@ -20,19 +11,34 @@ public class Player : MonoBehaviour
     private int _ammoCount;
     private int _ammoShot = 1;
 
-    private bool _isTripleShotEnabled = false;
-    private bool _isSpeedBoostEnabled = false;
-    private bool _isShieldBoostEnabled = false;
-    private bool _isMegaLaserEnabled = false; 
-    private bool _isNegativePickupEnabled = false;
-    private bool _thrusterEngineCoroutinePlaying = false;
-    private bool _isMagnetCooldownRoutinePlaying = false;
-
+    private float _speed = 7.5f;
+    private float _speedMultiplier = 2f;
+    private float _minSpeed = 7.5f;
+    private float _maxSpeed = 15f;
+    private float _noSpeed = 0f;
+    private float _canFire = 0;
+    private float _fireRate = 0.25f;
     private float _xBoundary = 8.5f, _yBoundary = 4.5f;
+
+    private bool _isTripleShotEnabled;
+    private bool _isSpeedBoostEnabled;
+    private bool _isShieldBoostEnabled;
+    private bool _isMegaLaserEnabled;
+    private bool _isNegativePickupEnabled;
+    private bool _thrusterEngineCoroutinePlaying;
+    private bool _isMagnetCooldownRoutinePlaying;
 
     private Vector3 _laserOffset = new Vector3(0f, 0.5f, 0f);
     private Vector3 _megaLaserOffset = new Vector3(0f, 5.25f, 0f);
     private Vector3 _tripleShotOffset = new Vector3(0f, 0.6f, 0f);
+
+    Color _shieldColor;
+    Color _thrusterBoostColor = new Color(1f, 1f, 1f, 1f);
+    Color _mainEngine = new Color(1f, 1f, 1f, 0.75f);
+    Color _NegativePowerup = new Color(1f, 1f, 1f, 0.5f);
+
+    [SerializeField] AudioClip _laserShotClip;
+    [SerializeField] AudioClip _emptyAmmoClip;
 
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
@@ -41,33 +47,25 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _leftEngineThruster;
     [SerializeField] private GameObject _playerShield;
 
-    SpawnManager _spawnManager;
-
-    UIManager _uiManager;
-
-    ThrusterEngine _thrusterEngine;
-
-    ThrusterController _thrustCont;
-
     AudioSource _audioSource;
+
+    CameraShake _cameraShake;
+
+    SpawnManager _spawnManager;
 
     SpriteRenderer _playerRend;
     SpriteRenderer _shieldSpriteRend;
     SpriteRenderer _thrustRend;
 
-    CameraShake _cameraShake;
+    ThrusterController _thrustCont;
+
+    ThrusterEngine _thrusterEngine;
+
+    UIManager _uiManager;
 
     WaitForSeconds _powerupRoutineThreeSeconds = new WaitForSeconds(3.0f);
     WaitForSeconds _powerupRoutineFourSeconds = new WaitForSeconds(4.0f);
     WaitForSeconds _powerupRoutineFiveSeconds = new WaitForSeconds(5.0f);
-
-    [SerializeField] AudioClip _laserShotClip;
-    [SerializeField] AudioClip _emptyAmmoClip;
-
-    Color _shieldColor;
-    Color _thrusterBoostColor = new Color(1f, 1f, 1f, 1f);
-    Color _mainEngine = new Color(1f, 1f, 1f, 0.75f);
-    Color _NegativePowerup = new Color(1f, 1f, 1f, 0.5f);
 
 
     void Start()
@@ -84,47 +82,47 @@ public class Player : MonoBehaviour
 
         if (_spawnManager == null)
         {
-            Debug.LogError("SpawnManager is NULL in Player script");
+            Debug.LogError("SpawnManager is NULL in Player");
         }
 
         if (_uiManager == null)
         {
-            Debug.LogError("UIManager is NULL in Player Script");
+            Debug.LogError("UIManager is NULL in Player");
         }
 
         if(_audioSource == null)
         {
-            Debug.LogError("AudioClip is NULL in Player script");
+            Debug.LogError("AudioClip is NULL in Player");
         }
 
         if(_playerRend == null)
         {
-            Debug.Log("SpriteRenderer is NULL in Player script");
+            Debug.LogError("SpriteRenderer is NULL in Player");
         }
 
         if(_shieldSpriteRend == null)
         {
-            Debug.Log("Shield is NULL in Player script");
+            Debug.LogError("Shield is NULL in Player");
         }
 
         if(_thrustRend == null)
         {
-            Debug.Log("Thruster is NULL in Player script");
+            Debug.LogError("Thruster is NULL in Player");
         }
 
         if(_thrusterEngine == null)
         {
-            Debug.Log("ThrusterEngine is NULL in Player script");
+            Debug.LogError("ThrusterEngine is NULL in Player");
         }
 
         if(_thrustCont == null)
         {
-            Debug.Log("ThrusterController is NULL in Player script");
+            Debug.LogError("ThrusterController is NULL in Player");
         }
 
         if(_cameraShake == null)
         {
-            Debug.Log("CameraShake is NULL in Player script");
+            Debug.LogError("CameraShake is NULL in Player");
         }
 
         _playerShield.SetActive(false);
@@ -217,11 +215,72 @@ public class Player : MonoBehaviour
         _audioSource.Play();
     }
 
-    private void CheckAmmoCount()
+    void CheckAmmoCount()
     {
         if (_ammoCount <= 0)
         {
             _ammoCount = _minAmmo;
+        }
+    }
+
+    void ShieldBoostDeactivated()
+    {
+        _shieldHits = 0;
+        _isShieldBoostEnabled = false;
+        _playerShield.SetActive(false);
+    }
+
+    void ShieldDamage()
+    {
+        _shieldHits--;
+
+        if (_shieldHits == 2)
+        {
+            _shieldColor = _shieldSpriteRend.color;
+            _shieldColor.a = 0.66f;
+            _shieldSpriteRend.color = _shieldColor;
+        }
+        else if (_shieldHits == 1)
+        {
+            _shieldColor = _shieldSpriteRend.color;
+            _shieldColor.a = 0.33f;
+            _shieldSpriteRend.color = _shieldColor;
+        }
+        else if (_shieldHits < 1)
+        {
+            ShieldBoostDeactivated();
+        }
+    }
+
+    void MagnetActivated()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && _isMagnetCooldownRoutinePlaying == false)
+        {
+            StartMagnet();
+        }
+        else if (Input.GetKeyDown(KeyCode.R) && _isMagnetCooldownRoutinePlaying == true)
+        {
+            Debug.Log("Magnet is cooling down");
+        }
+    }
+
+    void StartMagnet()
+    {
+        GameObject[] _powerupList = GameObject.FindGameObjectsWithTag("Powerup");
+
+        if (_powerupList != null)
+        {
+            for (int i = 0; i < _powerupList.Length; i++)
+            {
+                Powerups power = _powerupList[i].GetComponent<Powerups>();
+                power.Magnetise();
+                StartCoroutine(MagnetCooldownRoutine(10f));
+            }
+        }
+
+        if (_powerupList.Length == 0)
+        {
+            StartCoroutine(MagnetCooldownRoutine(5f));
         }
     }
 
@@ -367,71 +426,10 @@ public class Player : MonoBehaviour
         StartCoroutine(_thrustCont.NegativePickupRoutine());
     }
 
-    void ShieldBoostDeactivated()
-    {
-        _shieldHits = 0;
-        _isShieldBoostEnabled = false;
-        _playerShield.SetActive(false);
-    }
-
-    void ShieldDamage()
-    {
-        _shieldHits--;
-
-        if (_shieldHits == 2)
-        {
-            _shieldColor = _shieldSpriteRend.color;
-            _shieldColor.a = 0.66f;
-            _shieldSpriteRend.color = _shieldColor;
-        }
-        else if (_shieldHits == 1)
-        {
-            _shieldColor = _shieldSpriteRend.color;
-            _shieldColor.a = 0.33f;
-            _shieldSpriteRend.color = _shieldColor;
-        }
-        else if (_shieldHits < 1)
-        {
-            ShieldBoostDeactivated();
-        }
-    }
-
     public void AddPoints(int points)
     {
         _score += points;
         _uiManager.UpdateScore(_score);
-    }
-
-    void MagnetActivated()
-    {
-        if (Input.GetKeyDown(KeyCode.R) && _isMagnetCooldownRoutinePlaying == false)
-        {
-            StartMagnet();
-        }
-        else if (Input.GetKeyDown(KeyCode.R) && _isMagnetCooldownRoutinePlaying == true)
-        {
-            Debug.Log("Magnet is cooling down");
-        }
-    }
-
-    void StartMagnet()
-    {
-        GameObject[] _powerupList = GameObject.FindGameObjectsWithTag("Powerup");
-
-        if (_powerupList != null)
-        {
-            for (int i = 0; i < _powerupList.Length; i++)
-            {
-                Powerups power = _powerupList[i].GetComponent<Powerups>();
-                power.Magnetise();
-                StartCoroutine(MagnetCooldownRoutine(10f));
-            }
-        }
-
-        if (_powerupList.Length == 0)
-        {
-            StartCoroutine(MagnetCooldownRoutine(5f));
-        }
     }
 
     IEnumerator TripleShotPowerupRoutine()

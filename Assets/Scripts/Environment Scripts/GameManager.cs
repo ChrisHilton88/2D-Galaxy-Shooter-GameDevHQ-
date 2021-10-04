@@ -3,9 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    int _currentScene;
-
-    private bool _isGameOver = false;
+    private bool _isGameOver;
 
 
     void Update()

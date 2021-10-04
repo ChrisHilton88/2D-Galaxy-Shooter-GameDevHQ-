@@ -4,32 +4,33 @@ using UnityEngine.UI;
 
 public class ThrusterController : MonoBehaviour
 {
-    Slider _thrusterBar;
+    private float _maxThrusterPercent = 100f;
+    private float _minThrusterPercent = 0f;
+    private float _thrustDecrease = 1f;
+    private float _thrustIncrease = 0.5f;
+    private float _thrusterPercent = 100f;
 
-    Player _player;
-
-    Image _fillImage;
-    Image _backgroundFillImage;
-
-    AudioSource _audioSource;
-
-    [SerializeField] AudioClip _rechargeThrusterClip;
-    [SerializeField] AudioClip _overloadAlarmClip;
-    [SerializeField] AudioClip _thrusterBoosterClip;
+    private bool _isOverloaded;
+    private bool _coroutinePlaying;
+    private bool _isNegativePickupEnabled;
 
     Color _thrustGaugeOverload = new Color(1, 0, 0, 1);
     Color _thrustGaugeNormal = new Color(0, 0, 1, 1);
     Color _backgroundFillWhite = new Color(1, 1, 1, 1);
 
-    private float _maxThrusterPercent = 100f;
-    private float _minThrusterPercent = 0f;
-    private float _thrustDecrease = 1f;
-    private float _thrustIncrease = 0.5f;
-    [SerializeField] private float _thrusterPercent = 100f;
+    [SerializeField] AudioClip _rechargeThrusterClip;
+    [SerializeField] AudioClip _overloadAlarmClip;
+    [SerializeField] AudioClip _thrusterBoosterClip;
 
-    private bool _isOverloaded = false;
-    private bool _coroutinePlaying = false;
-    private bool _isNegativePickupEnabled = false;
+    AudioSource _audioSource;
+
+    Image _fillImage;
+    Image _backgroundFillImage;
+
+    Player _player;
+
+    Slider _thrusterBar;
+
 
     void Start()
     {
@@ -41,27 +42,27 @@ public class ThrusterController : MonoBehaviour
 
         if(_backgroundFillImage == null)
         {
-            Debug.Log("Background Image is NULL");
+            Debug.LogError("BackgroundImage is NULL in ThrusterController");
         }
 
         if(_fillImage == null)
         {
-            Debug.Log("FillImage is NULL");
+            Debug.LogError("FillImage is NULL in ThrusterController");
         }
 
         if(_thrusterBar == null)
         {
-            Debug.Log("Thruster bar is NULL");
+            Debug.LogError("ThrusterBar is NULL in ThrusterController");
         }
 
         if (_player == null)
         {
-            Debug.Log("Player script not found within ThrusterBarController script");
+            Debug.LogError("Player is NULL in ThrusterController");
         }
 
         if(_audioSource == null)
         {
-            Debug.Log("AudioSource is NULL");
+            Debug.LogError("AudioSource is NULL in ThrusterController");
         }
 
         _fillImage.color = _thrustGaugeNormal;

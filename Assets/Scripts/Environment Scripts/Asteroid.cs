@@ -2,13 +2,13 @@
 
 public class Asteroid : MonoBehaviour
 {
-    private int rotateSpeed = 20;
+    private int _rotateSpeed = 20;
+
+    [SerializeField] private GameObject _explosionPrefab;
 
     SpawnManager _spawnManager;
 
     UIManager _uiManager;
-
-    [SerializeField] private GameObject _explosionPrefab;
 
 
     void Start()
@@ -23,13 +23,13 @@ public class Asteroid : MonoBehaviour
 
         if(_uiManager == null)
         {
-            Debug.Log("UIManager is NULL in Asteroid");
+            Debug.LogError("UIManager is NULL in Asteroid");
         }
     }
 
     void Update()
     {
-        transform.Rotate(0, 0, 1 * rotateSpeed * Time.deltaTime);
+        transform.Rotate(0, 0, 1 * _rotateSpeed * Time.deltaTime);
     }
 
     void OnTriggerEnter2D(Collider2D other)

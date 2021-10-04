@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
-    WaitForSeconds _cameraTimer = new WaitForSeconds(0.1f);
-
-    [SerializeField] Transform _mainCamera;
+    private bool _coroutinePlaying;
 
     Vector3 _resetMainCamera = new Vector3(0, 0, -10);
     Vector3 _leftCameraPos = new Vector3(-0.05f, 0, -10);
     Vector3 _rightCameraPos = new Vector3(0.05f, 0, -10);
 
-    private bool _coroutinePlaying = false;
+    [SerializeField] Transform _mainCamera;
+
+    WaitForSeconds _cameraTimer = new WaitForSeconds(0.1f);
 
 
     public void CallCameraShake()

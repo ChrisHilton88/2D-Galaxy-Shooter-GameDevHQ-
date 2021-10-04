@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HomingMissileBehaviour : MonoBehaviour
 {
@@ -10,15 +8,29 @@ public class HomingMissileBehaviour : MonoBehaviour
 
     Vector3 _playClipAtPoint = new Vector3(0, 0, 0);
 
-    GameObject _closestEnemy;
+    [SerializeField] AudioClip _explosionClip;
 
     Animator _anim;
 
-    [SerializeField] AudioClip _explosionClip;
+    GameObject _closestEnemy;
+
+    SpriteRenderer _spriteRend;
+
 
     void Start()
     {
         _anim = GetComponent<Animator>();
+        _spriteRend = GetComponent<SpriteRenderer>();
+
+        if(_anim == null)
+        {
+            Debug.LogError("Animator is NULL in HomingMissileBehaviour");
+        }
+
+        if(_spriteRend == null)
+        {
+            Debug.LogError("SpriteRenderer is NULL in HomingMissileBehaviour");
+        }
     }
 
     void Update()
@@ -38,16 +50,16 @@ public class HomingMissileBehaviour : MonoBehaviour
         }
     }
 
-    public void FindClosestEnemy()
+    void FindClosestEnemy(string _enemyTagName)
     {
         float _closestDistanceToEnemy = Mathf.Infinity;
-        GameObject[] _enemyList = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] _enemyAndBossList = GameObject.FindGameObjectsWithTag(_enemyTagName);
 
-        if (_enemyList != null)
+        if (_enemyAndBossList != null)
         {
             _enemyTargetFound = true;
 
-            foreach (GameObject enemy in _enemyList)
+            foreach (GameObject enemy in _enemyAndBossList)
             {
                 float _distanceToEnemy = (enemy.transform.position - transform.position).sqrMagnitude;
 
@@ -59,7 +71,7 @@ public class HomingMissileBehaviour : MonoBehaviour
             }
         }
 
-        if (_enemyList.Length == 0)
+        if (_enemyAndBossList.Length == 0)
         {
             _enemyTargetFound = false;
             Debug.Log("No enemies found!");
@@ -82,8 +94,41 @@ public class HomingMissileBehaviour : MonoBehaviour
             AudioSource.PlayClipAtPoint(_explosionClip, _playClipAtPoint, 1f);
             Destroy(gameObject, 2.633f);
             Destroy(other.gameObject);
+            Destroy(GetComponent<SpriteRenderer>());
             Destroy(GetComponent<Collider2D>());
             Destroy(GetComponent<HomingMissileBehaviour>());
         }
+
+        if(other.tag == "Boss")
+        {
+            _anim.SetTrigger("OnBossCollision");
+            AudioSource.PlayClipAtPoint(_explosionClip, _playClipAtPoint, 1f);
+            _missileSpeed = 0f;
+            Destroy(gameObject, 2.633f);
+            Destroy(_spriteRend);
+        }
+
+        if (other.tag == "BossShield")
+        {
+            _anim.SetTrigger("OnBossCollision");
+            AudioSource.PlayClipAtPoint(_explosionClip, _playClipAtPoint, 1f);
+            _missileSpeed = 0f;
+            Destroy(gameObject, 2.633f);
+            Destroy(GetComponent<Collider2D>());
+            Destroy(_spriteRend);
+        }
+    }
+
+    public void FindClosestEnemy(int _currentWave)
+    {
+        if (_currentWave < 6)
+        {
+            FindClosestEnemy("Enemy");
+        }
+        else if (_currentWave == 6)
+        {
+            FindClosestEnemy("Boss");
+        }
     }
 }
+

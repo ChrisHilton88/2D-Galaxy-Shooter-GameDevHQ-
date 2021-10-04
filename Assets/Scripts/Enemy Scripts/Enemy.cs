@@ -18,23 +18,23 @@ public class Enemy : MonoBehaviour
     private bool _isCoroutinePlaying;
     //[SerializeField] private bool isAlive;
 
-    [SerializeField] private GameObject _enemyLaser;
+    Vector3 _downLaserOffset = new Vector3(0f, -0.25f, 0f);
+    Vector3 _downRayOffset = new Vector3(0, -0.6f, 0);
+    Vector3 _upRayOffset = new Vector3(0f, 0.5f, 0f);
+    Vector3 _enemyShootUpOffset = new Vector3(0f, 1.50f, 0f);
 
-    Player _player;
+    [SerializeField] private GameObject _enemyLaser;
 
     Animator _animator;
 
     AudioSource _audioSource;
 
+    Player _player;
+
     SpawnManager _spawnManager;
 
     WaitForSeconds _ramTime = new WaitForSeconds(0.5f);
     WaitForSeconds _cooldownTimer = new WaitForSeconds(5.0f);
-
-    Vector3 _downLaserOffset = new Vector3(0f, -0.25f, 0f);
-    Vector3 _downRayOffset = new Vector3(0, -0.6f, 0);
-    Vector3 _upRayOffset = new Vector3(0f, 0.5f, 0f);
-    Vector3 _enemyShootUpOffset = new Vector3(0f, 1.50f, 0f);
 
 
     void Start()
@@ -46,22 +46,22 @@ public class Enemy : MonoBehaviour
 
         if (_player == null)
         {
-            Debug.Log("Player script not found in Enemy script");
+            Debug.LogError("Player is NULL in Enemy");
         }
 
         if(_audioSource == null)
         {
-            Debug.LogError("AudioSource not found on Enemy script");
+            Debug.LogError("AudioSource is NULL in Enemy");
         }
 
         if(_animator == null)
         {
-            Debug.LogError("Animator not found on Enemy script");
+            Debug.LogError("Animator is NULL in Enemy");
         }
 
         if(_spawnManager == null)
         {
-            Debug.Log("SpawnManager not found in Enemy script");
+            Debug.LogError("SpawnManager is NUL in Enemy");
         }
 
         //isAlive = true;
@@ -190,6 +190,17 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void CollisionExplosion()
+    {
+        //isAlive = false;
+        _audioSource.Play();
+        _enemySpeed = 0.25f;
+        _animator.SetBool("OnEnemyDeath", true);
+        Destroy(gameObject, 2.633f);
+        Destroy(GetComponent<Collider2D>());
+        Destroy(GetComponent<Enemy>());
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Laser")
@@ -217,17 +228,6 @@ public class Enemy : MonoBehaviour
             _player.AddPoints(Random.Range(10, 21));
             Destroy(other.gameObject);
         }
-    }
-
-    void CollisionExplosion()
-    {
-        //isAlive = false;
-        _audioSource.Play();
-        _enemySpeed = 0.25f;
-        _animator.SetBool("OnEnemyDeath", true);
-        Destroy(gameObject, 2.633f);
-        Destroy(GetComponent<Collider2D>());
-        Destroy(GetComponent<Enemy>());
     }
 
     IEnumerator EnemyRam()

@@ -2,15 +2,15 @@
 
 public class Laser : MonoBehaviour
 {
-    Player _player;
-
     private int _laserSpeed = 8;
 
-    [SerializeField] private bool _isEnemy;
+    private bool _isEnemy;
 
     Vector3 _offset = new Vector3(0f, -0.5f, 0f);
 
     [SerializeField] GameObject _explosionPrefab;
+
+    Player _player;
 
 
     void Start()
@@ -19,7 +19,7 @@ public class Laser : MonoBehaviour
 
         if(_player == null)
         {
-            Debug.LogError("Player script not found in Laser script");
+            Debug.LogError("Player is NULL in Laser");
         }
     }
 
